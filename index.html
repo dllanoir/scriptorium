@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scriptorium - Biblioteca de Textos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1e1e24;
+            color: #c8c8d0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-y: hidden; /* Evita scroll na página inteira */
+        }
+        /* Estilização da barra de scroll para um look mais integrado */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e1e24;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4a4a5a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #5a5a6a;
+        }
+        /* Classes de estado para itens ativos */
+        .collection-item.active {
+            background-color: #3a3a4a;
+            color: #ffffff;
+        }
+        .text-item.active {
+            background-color: #4a4a5a;
+            border-color: #6a6a7a;
+        }
+    </style>
+</head>
+<body class="h-screen">
+
+    <div id="app" class="flex h-full w-full">
+
+        <!-- PAINEL 1: COLEÇÕES (Sidebar) -->
+        <aside class="w-64 flex-shrink-0 bg-[#25252c] p-4 flex flex-col">
+            <header class="mb-8 px-2">
+                <h1 class="text-xl font-bold text-white">Scriptorium</h1>
+            </header>
+            <nav class="flex-grow overflow-y-auto">
+                <h2 class="text-xs font-bold tracking-widest text-gray-500 mb-3 px-2">COLEÇÕES</h2>
+                <ul id="collections-list" class="space-y-1">
+                    <!-- Coleções serão inseridas aqui pelo JS -->
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- PAINEL 2: LISTA DE TEXTOS -->
+        <section class="w-80 flex-shrink-0 border-l border-r border-[#3a3a4a] bg-[#1e1e24] flex flex-col">
+            <header class="p-4 border-b border-[#3a3a4a] flex-shrink-0">
+                <input type="search" id="search-box" placeholder="Procurar textos..." class="w-full bg-[#25252c] border border-[#4a4a5a] rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </header>
+            <div id="text-list-container" class="flex-grow overflow-y-auto p-2">
+                 <!-- Textos da coleção selecionada serão inseridos aqui -->
+            </div>
+        </section>
+
+        <!-- PAINEL 3: ÁREA DE LEITURA -->
+        <main class="flex-1 flex flex-col p-8 md:p-12 overflow-y-auto">
+            <div id="reading-pane" class="w-full max-w-3xl mx-auto">
+                <div id="empty-state" class="hidden h-full items-center justify-center">
+                    <div class="text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <h3 class="mt-2 text-lg font-medium text-white">Nenhum texto selecionado</h3>
+                        <p class="mt-1 text-sm text-gray-400">Selecione um texto da lista para ler.</p>
+                    </div>
+                </div>
+                <div id="content-display">
+                    <h1 id="text-title" class="text-4xl font-bold text-white mb-2"></h1>
+                    <p id="text-date" class="text-gray-400 mb-8"></p>
+                    <article id="text-body" class="prose prose-lg prose-invert max-w-none text-gray-300 leading-relaxed space-y-4">
+                        <!-- Conteúdo do texto selecionado -->
+                    </article>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- BANCO DE DADOS ---
+            const collections = [
+                { id: 1, name: "Todos os Textos", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>` },
+                { id: 2, name: "Reflexões", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>` },
+                { id: 3, name: "Notas Pessoais", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>` },
+                { id: 4, name: "Cartas", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>` },
+            ];
+
+            const texts = [
+                { id: 1, collectionId: 2, title: "Sobre o amor: não tive sorte, mas acho lindo!", date: "5 de Agosto, 2025", content: [
+                        "Nem tudo precisa ser sobre quem tem mais razão.<br>Às vezes, é só sobre duas pessoas que tentaram… mas se perderam no caminho.<br>Tentaram amar do jeito que conseguiam. Tentaram se entender mesmo quando não sabiam nem lidar com as próprias dores.<br>E mesmo com os erros, com as falhas, com os silêncios que doeram mais que palavras… teve sentimento.",
+                        "Não é porque terminou que foi em vão.<br>Não é porque doeu que foi mentira.<br>Foi real.<br>Foi intenso.<br>E, mesmo que hoje reste só um adeus mal explicado, ainda assim valeu.",
+                        "Porque, no fim, cada um pediu desculpas como pôde.<br>Cada um sentiu a sua dor em silêncio.<br>E às vezes a forma mais bonita de amor…<br>é deixar ir, sem precisar vencer."
+                    ] }];
+
+            // --- ESTADO DA APLICAÇÃO ---
+            let activeCollectionId = 1;
+            let activeTextId = 1;
+
+            // --- ELEMENTOS DO DOM ---
+            const collectionsList = document.getElementById('collections-list');
+            const textListContainer = document.getElementById('text-list-container');
+            const textTitle = document.getElementById('text-title');
+            const textDate = document.getElementById('text-date');
+            const textBody = document.getElementById('text-body');
+            const emptyState = document.getElementById('empty-state');
+            const contentDisplay = document.getElementById('content-display');
+
+            // --- FUNÇÕES DE RENDERIZAÇÃO ---
+
+            function renderCollections() {
+                collectionsList.innerHTML = '';
+                collections.forEach(col => {
+                    const li = document.createElement('li');
+                    li.className = `collection-item flex items-center space-x-3 font-semibold text-gray-300 rounded-md cursor-pointer px-3 py-2 transition-colors ${col.id === activeCollectionId ? 'active' : 'hover:bg-[#3a3a4a] hover:text-white'}`;
+                    li.dataset.collectionId = col.id;
+                    li.innerHTML = `${col.icon}<span>${col.name}</span>`;
+                    collectionsList.appendChild(li);
+                });
+            }
+
+            function renderTextList(collectionId, searchTerm = '') {
+                textListContainer.innerHTML = '';
+                let textsToRender = texts;
+
+                if (collectionId !== 1) {
+                    textsToRender = textsToRender.filter(t => t.collectionId === collectionId);
+                }
+
+                if (searchTerm) {
+                    textsToRender = textsToRender.filter(t => t.title.toLowerCase().includes(searchTerm.toLowerCase()));
+                }
+
+                textsToRender.forEach(text => {
+                    const div = document.createElement('div');
+                    div.className = `text-item border border-transparent p-3 rounded-lg cursor-pointer mb-2 ${text.id === activeTextId ? 'active' : 'hover:bg-[#2a2a34]'}`;
+                    div.dataset.textId = text.id;
+                    div.innerHTML = `
+                        <h3 class="font-semibold text-white truncate">${text.title}</h3>
+                        <p class="text-sm text-gray-400">${text.date}</p>
+                    `;
+                    textListContainer.appendChild(div);
+                });
+            }
+
+            function renderTextContent(textId) {
+                const text = texts.find(t => t.id === textId);
+                if (!text) {
+                    emptyState.classList.remove('hidden');
+                    emptyState.classList.add('flex');
+                    contentDisplay.classList.add('hidden');
+                    return;
+                }
+                emptyState.classList.add('hidden');
+                emptyState.classList.remove('flex');
+                contentDisplay.classList.remove('hidden');
+
+                textTitle.textContent = text.title;
+                textDate.textContent = text.date;
+                textBody.innerHTML = text.content.map(p => `<p>${p}</p>`).join('');
+            }
+
+            // --- FUNÇÕES DE ATUALIZAÇÃO ---
+            function setActiveCollection(collectionId) {
+                activeCollectionId = collectionId;
+                let textsInCollection = texts;
+                if(collectionId !== 1) {
+                    textsInCollection = texts.filter(t => t.collectionId === collectionId);
+                }
+                
+                activeTextId = textsInCollection[0]?.id || null;
+                
+                updateUI();
+            }
+
+            function setActiveText(textId) {
+                activeTextId = textId;
+                updateUI();
+            }
+            
+            function updateUI() {
+                renderCollections();
+                renderTextList(activeCollectionId, document.getElementById('search-box').value);
+                renderTextContent(activeTextId);
+            }
+
+            // --- EVENT LISTENERS ---
+            collectionsList.addEventListener('click', (e) => {
+                const collectionItem = e.target.closest('.collection-item');
+                if (collectionItem) {
+                    const id = parseInt(collectionItem.dataset.collectionId);
+                    setActiveCollection(id);
+                }
+            });
+
+            textListContainer.addEventListener('click', (e) => {
+                const textItem = e.target.closest('.text-item');
+                if (textItem) {
+                    const id = parseInt(textItem.dataset.textId);
+                    setActiveText(id);
+                }
+            });
+            
+            document.getElementById('search-box').addEventListener('input', (e) => {
+                renderTextList(activeCollectionId, e.target.value);
+            });
+
+            // --- INICIALIZAÇÃO ---
+            updateUI();
+        });
+    </script>
+
+</body>
+</html>
