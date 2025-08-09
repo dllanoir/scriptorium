@@ -15,7 +15,12 @@
             color: #c8c8d0;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            overflow-y: hidden; /* Evita scroll na página inteira */
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                overflow-y: auto;
+            }
         }
         /* Estilização da barra de scroll para um look mais integrado */
         ::-webkit-scrollbar {
@@ -44,12 +49,26 @@
 </head>
 <body class="h-screen">
 
-    <div id="app" class="flex h-full w-full">
+    <!-- Menu móvel toggle -->
+    <div id="mobile-menu-toggle" class="fixed top-4 left-4 z-50 md:hidden bg-[#25252c] p-2 rounded-lg shadow-lg cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+    </div>
+
+    <div id="app" class="flex h-full w-full relative">
+        <!-- Overlay para mobile -->
+        <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"></div>
 
         <!-- PAINEL 1: COLEÇÕES (Sidebar) -->
-        <aside class="w-64 flex-shrink-0 bg-[#25252c] p-4 flex flex-col">
-            <header class="mb-8 px-2">
+        <aside class="fixed md:relative w-64 h-full flex-shrink-0 bg-[#25252c] p-4 flex flex-col z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+            <header class="mb-8 px-2 flex justify-between items-center">
                 <h1 class="text-xl font-bold text-white">Scriptorium</h1>
+                <button id="close-sidebar" class="md:hidden text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
             </header>
             <nav class="flex-grow overflow-y-auto">
                 <h2 class="text-xs font-bold tracking-widest text-gray-500 mb-3 px-2">COLEÇÕES</h2>
@@ -60,17 +79,20 @@
         </aside>
 
         <!-- PAINEL 2: LISTA DE TEXTOS -->
-        <section class="w-80 flex-shrink-0 border-l border-r border-[#3a3a4a] bg-[#1e1e24] flex flex-col">
-            <header class="p-4 border-b border-[#3a3a4a] flex-shrink-0">
+        <section class="w-full md:w-80 flex-shrink-0 border-l border-r border-[#3a3a4a] bg-[#1e1e24] flex flex-col md:relative fixed inset-y-0 transform translate-x-0 md:translate-x-0 transition-transform duration-300 ease-in-out z-30" id="text-list-section">
+            <header class="pt-16 md:pt-4 px-4 pb-4 border-b border-[#3a3a4a] flex-shrink-0">
                 <input type="search" id="search-box" placeholder="Procurar textos..." class="w-full bg-[#25252c] border border-[#4a4a5a] rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
             </header>
             <div id="text-list-container" class="flex-grow overflow-y-auto p-2">
-                 <!-- Textos da coleção selecionada serão inseridos aqui -->
+                <!-- Textos da coleção selecionada serão inseridos aqui -->
             </div>
+            <button id="back-to-reading" class="md:hidden w-full py-3 bg-[#25252c] text-white font-medium border-t border-[#3a3a4a]">
+                Voltar para leitura
+            </button>
         </section>
 
         <!-- PAINEL 3: ÁREA DE LEITURA -->
-        <main class="flex-1 flex flex-col p-8 md:p-12 overflow-y-auto">
+        <main class="flex-1 flex flex-col p-4 md:p-8 lg:p-12 overflow-y-auto relative">
             <div id="reading-pane" class="w-full max-w-3xl mx-auto">
                 <div id="empty-state" class="hidden h-full items-center justify-center">
                     <div class="text-center">
@@ -82,9 +104,17 @@
                     </div>
                 </div>
                 <div id="content-display">
-                    <h1 id="text-title" class="text-4xl font-bold text-white mb-2"></h1>
-                    <p id="text-date" class="text-gray-400 mb-8"></p>
-                    <article id="text-body" class="prose prose-lg prose-invert max-w-none text-gray-300 leading-relaxed space-y-4">
+                    <div class="flex justify-end md:hidden mb-4 mt-2 px-2">
+                        <button id="show-text-list" class="bg-[#25252c] text-white px-4 py-2 rounded-lg flex items-center shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                            Ver lista de textos
+                        </button>
+                    </div>
+                    <h1 id="text-title" class="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2"></h1>
+                    <p id="text-date" class="text-sm md:text-base text-gray-400 mb-6 md:mb-8"></p>
+                    <article id="text-body" class="prose prose-sm md:prose-base lg:prose-lg prose-invert max-w-none text-gray-300 leading-relaxed space-y-4">
                         <!-- Conteúdo do texto selecionado -->
                     </article>
                 </div>
@@ -220,6 +250,64 @@
             
             document.getElementById('search-box').addEventListener('input', (e) => {
                 renderTextList(activeCollectionId, e.target.value);
+            });
+
+            // --- MOBILE NAVIGATION ---
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const sidebar = document.querySelector('aside');
+            const mobileOverlay = document.getElementById('mobile-overlay');
+            const closeSidebarButton = document.getElementById('close-sidebar');
+            const textListSection = document.getElementById('text-list-section');
+            const backToReadingButton = document.getElementById('back-to-reading');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('-translate-x-full');
+                mobileOverlay.classList.toggle('hidden');
+                document.body.classList.toggle('overflow-hidden');
+            }
+
+            function showTextList() {
+                textListSection.classList.remove('translate-x-full');
+                document.body.classList.add('overflow-hidden');
+            }
+
+            function hideTextList() {
+                textListSection.classList.add('translate-x-full');
+                document.body.classList.remove('overflow-hidden');
+            }
+
+            mobileMenuToggle.addEventListener('click', toggleSidebar);
+            closeSidebarButton.addEventListener('click', toggleSidebar);
+            mobileOverlay.addEventListener('click', toggleSidebar);
+
+            // Em dispositivos móveis, ao clicar em uma coleção, feche o sidebar
+            collectionsList.addEventListener('click', (e) => {
+                if (window.innerWidth < 768) {
+                    toggleSidebar();
+                    showTextList();
+                }
+            });
+
+            // Em dispositivos móveis, ao clicar em um texto, esconda a lista
+            textListContainer.addEventListener('click', (e) => {
+                if (window.innerWidth < 768) {
+                    hideTextList();
+                }
+            });
+
+            backToReadingButton.addEventListener('click', hideTextList);
+
+            // Botão para mostrar a lista de textos em dispositivos móveis
+            document.getElementById('show-text-list').addEventListener('click', showTextList);
+
+            // Ajuste o layout quando o tamanho da tela mudar
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768) {
+                    sidebar.classList.remove('-translate-x-full');
+                    textListSection.classList.remove('translate-x-full');
+                    mobileOverlay.classList.add('hidden');
+                    document.body.classList.remove('overflow-hidden');
+                }
             });
 
             // --- INICIALIZAÇÃO ---
