@@ -43,6 +43,7 @@ body {
 /* Mobile menu toggle */
 #mobile-menu-toggle {
     position: fixed;
+    height: 2.5rem;
     top: 1rem;
     left: 1rem;
     z-index: 50;
@@ -64,7 +65,6 @@ body {
     inset: 0;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 40;
-    display: none;
 }
 
 /* Sidebar */
@@ -78,7 +78,6 @@ aside {
     display: flex;
     flex-direction: column;
     z-index: 50;
-    transform: translateX(-100%);
     transition-property: transform;
     transition-duration: 300ms;
     transition-timing-function: ease-in-out;
@@ -99,6 +98,12 @@ aside h1 {
 }
 #close-sidebar {
     color: white;
+    background: none;
+    border: none;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 #close-sidebar svg {
     height: 1.5rem;
@@ -188,8 +193,16 @@ aside h2 {
     background-color: #25252c;
     color: white;
     font-weight: 500;
-    border-top-width: 1px;
-    border-color: #3a3a4a;
+    border-top: 1px solid #3a3a4a;
+}
+button, input[type="submit"], input[type="reset"] {
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
 }
 
 /* Main Content */
@@ -397,4 +410,21 @@ main {
 
 .hidden {
     display: none;
+}
+
+/* Utility classes for JS interactivity */
+.overflow-hidden {
+    overflow: hidden;
+}
+.-translate-x-full {
+    transform: translateX(-100%);
+}
+.translate-x-full {
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform 300ms ease-in-out, visibility 0s linear 300ms;
+}
+#close-sidebar svg {
+    height: 1.5rem;
+    width: 1.5rem;
 }
