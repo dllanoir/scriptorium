@@ -25,6 +25,32 @@
             "A vida é uma jornada cheia de altos e baixos.<br>Às vezes, nos sentimos perdidos e sem direção.",
             "Mas lembre-se de que cada desafio é uma oportunidade de crescimento.<br>Aprenda com os erros e celebre as vitórias.",
             "E nunca se esqueça de que você é mais forte do que pensa."
-        ] }
+        ] },
+        {
+          "id": 5,
+          "collectionId": 3,
+          "title": "No meio do caminho",
+          "date": "10 de Agosto, 2025",
+          "content": [
+              "Tem dias que a gente acorda com a sensação de estar no meio do caminho. Não no início, onde tudo é novidade e cheio de possibilidades, nem no fim, onde as respostas já estão mais claras. No meio, as coisas ficam nebulosas, como se você soubesse onde quer chegar, mas o mapa tivesse manchas de café e alguns pedaços rasgados.<br>E aí, a vida te testa. Coloca pessoas que somam e outras que drenam. Momentos que parecem te empurrar pra frente e outros que te seguram pelo braço. Só que, no fundo, o que faz diferença não é a velocidade, é a direção.<br>Às vezes, ir devagar é a única forma de não perder de vista o que realmente importa. E, mesmo quando parece que nada muda, você continua se movendo.",
+              "Porque viver é isso: se permitir tropeçar, respirar fundo, e continuar andando."
+          ]
+        },
+        {
+  "id": 6,
+  "collectionId": 4,
+  "title": "O difícil exercício de esquecer",
+  "date": "10 de Agosto, 2025",
+  "content": [
+    "Amar muito alguém é como construir uma casa inteira dentro de si,<br>paredes erguidas com momentos,<br>janelas abertas para sonhos que pareciam eternos,<br>e um teto feito de promessas que, naquele tempo, você acreditava serem inquebráveis,",
+    "Só que chega o dia em que você percebe que aquela casa não é mais lar,<br>que as paredes já não te protegem,<br>elas te prendem,<br>e cada objeto ali é um lembrete do que foi e do que nunca mais vai ser,",
+    "O amor que antes era abrigo agora é prisão,<br>e você se vê condenado a uma sentença silenciosa:<br>aprender a esquecer,<br>como se fosse possível arrancar um pedaço de si sem deixar cicatriz,",
+    "O esquecimento não vem de uma vez,<br>não é um botão que você aperta e pronto,<br>ele vem como um trabalho diário,<br>um exercício exaustivo de desfazer memórias,<br>de se obrigar a não procurar o nome dela nas notificações,<br>de não ouvir as músicas que te levavam até ela,<br>de evitar as ruas que vocês andaram juntos,",
+    "Todo dia é uma batalha contra a vontade de relembrar,<br>porque lembrar é mais fácil do que reconstruir,<br>e por mais que doa, a memória tem o conforto de um cobertor velho:<br>gasto, mas familiar,",
+    "Você começa a substituir,<br>trocar conversas por silêncios,<br>olhares por horizontes vazios,<br>planos por rotinas automáticas,<br>não porque quer,<br>mas porque precisa,<br>porque amar demais agora significa sangrar devagar,",
+    "No fundo, existe um medo escondido:<br>o medo de que esquecer seja a única forma de sobreviver,<br>e que sobreviver signifique também matar a parte de você que acreditava,<br>e então o amor vai deixando de ser um sentimento vivo,<br>para virar um peso guardado num canto escuro,<br>um fantasma que ainda sussurra,<br>mas que já não tem forças para te derrubar,",
+    "E nesse processo lento e cruel,<br>você percebe que esquecer não é apagar,<br>é apenas aprender a viver com a ausência,<br>como alguém que se acostuma a respirar com metade do pulmão,<br>sempre com a sensação de que falta algo,<br>mas com a certeza de que seguir é a única escolha possível."
+  ]
+}
   ]
 }
