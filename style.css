@@ -416,13 +416,18 @@ main {
 .overflow-hidden {
     overflow: hidden;
 }
-.-translate-x-full {
-    transform: translateX(-100%);
-}
-.translate-x-full {
-    transform: translateX(100%);
-    visibility: hidden;
-    transition: transform 300ms ease-in-out, visibility 0s linear 300ms;
+
+@media (max-width: 767px) {
+    .-translate-x-full {
+        transform: translateX(-100%);
+        visibility: hidden;
+        transition: transform 300ms ease-in-out, visibility 0s linear 300ms;
+    }
+    .translate-x-full {
+        transform: translateX(100%);
+        visibility: hidden;
+        transition: transform 300ms ease-in-out, visibility 0s linear 300ms;
+    }
 }
 #close-sidebar svg {
     height: 1.5rem;
