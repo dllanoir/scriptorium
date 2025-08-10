@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         collectionsList.innerHTML = '';
         collections.forEach(col => {
             const li = document.createElement('li');
-            li.className = `collection-item flex items-center space-x-3 font-semibold text-gray-300 rounded-md cursor-pointer px-3 py-2 transition-colors ${col.id === activeCollectionId ? 'active' : 'hover:bg-[#3a3a4a] hover:text-white'}`;
+            li.className = `collection-item ${col.id === activeCollectionId ? 'active' : ''}`;
             li.dataset.collectionId = col.id;
             li.innerHTML = `${col.icon}<span>${col.name}</span>`;
             collectionsList.appendChild(li);
@@ -43,11 +43,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         textsToRender.forEach(text => {
             const div = document.createElement('div');
-            div.className = `text-item border border-transparent p-3 rounded-lg cursor-pointer mb-2 ${text.id === activeTextId ? 'active' : 'hover:bg-[#2a2a34]'}`;
+            div.className = `text-item ${text.id === activeTextId ? 'active' : ''}`;
             div.dataset.textId = text.id;
             div.innerHTML = `
-                <h3 class="font-semibold text-white truncate">${text.title}</h3>
-                <p class="text-sm text-gray-400">${text.date}</p>
+                <h3>${text.title}</h3>
+                <p>${text.date}</p>
             `;
             textListContainer.appendChild(div);
         });
