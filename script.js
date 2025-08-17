@@ -30,11 +30,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const emptyState = document.getElementById('empty-state');
     const contentDisplay = document.getElementById('content-display');
     const authButton = document.getElementById('auth-button');
+    const newTextButton = document.getElementById('new-text-button');
     const loginModal = document.getElementById('login-modal');
     const closeLoginButton = document.getElementById('close-login-button');
     const loginOverlay = document.getElementById('login-overlay');
     const loginForm = document.getElementById('login-form');
     const loginError = document.getElementById('login-error');
+    const newTextModal = document.getElementById('new-text-modal');
+    const newTextOverlay = document.getElementById('new-text-overlay');
+    const closeNewTextButton = document.getElementById('close-new-text-button');
+    const newTextForm = document.getElementById('new-text-form');
+    const newCollectionSelect = document.getElementById('new-collection');
+    
+    const userInfo = document.getElementById('user-info');
+    const userEmail = document.getElementById('user-email');
 
     // --- ÍCONES ---
     const loginIcon = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="24" height="24">
@@ -45,6 +54,29 @@ document.addEventListener('DOMContentLoaded', () => {
     </svg>`;
 
     // --- FUNÇÕES DE RENDERIZAÇÃO ---
+
+    function populateCollectionsDropdown() {
+        newCollectionSelect.innerHTML = '';
+        const collectionsToRender = collections.filter(c => c.id !== 1);
+        collectionsToRender.forEach(col => {
+            const option = document.createElement('option');
+            option.value = col.id;
+            option.textContent = col.name;
+            newCollectionSelect.appendChild(option);
+        });
+    }
+
+    function showToast(message, type = 'success') {
+        Toastify({
+            text: message,
+            duration: 3000,
+            close: true,
+            gravity: "top", // `top` or `bottom`
+            position: "right", // `left`, `center` or `right`
+            backgroundColor: type === 'success' ? '#10B981' : '#EF4444',
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+        }).showToast();
+    }
 
     function renderCollections() {
         collectionsList.innerHTML = '';
@@ -174,6 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const { data: { session } } = await _supabase.auth.getSession();
                 if (session) {
                     await _supabase.auth.signOut();
+                    showToast('Logout bem-sucedido!');
                 } else {
                     loginModal.style.display = 'flex';
                 }
@@ -203,14 +236,76 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     loginModal.style.display = 'none';
                     loginError.classList.add('hidden');
+                    showToast('Login bem-sucedido!');
+                }
+            });
+
+            newTextButton.addEventListener('click', () => {
+                populateCollectionsDropdown();
+                newTextModal.style.display = 'flex';
+            });
+
+            closeNewTextButton.addEventListener('click', () => {
+                newTextModal.style.display = 'none';
+            });
+
+            newTextOverlay.addEventListener('click', () => {
+                newTextModal.style.display = 'none';
+            });
+
+            newTextForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const title = e.target['new-title'].value;
+                const collectionId = e.target['new-collection'].value;
+                const rawContent = e.target['new-content'].value;
+                const paragraphs = rawContent.split('\n\n');
+                const content = paragraphs.map(p => p.replace(/\n/g, '<br>'));
+
+                const { data: { user } } = await _supabase.auth.getUser();
+
+                if (user) {
+                    const { data, error } = await _supabase
+                        .from('texts')
+                        .insert([{title, collectionId, content}]);
+
+                    if (error) {
+                        console.error('Erro ao publicar texto:', error);
+                        showToast('Erro ao publicar texto.', 'error');
+                    } else {
+                        showToast('Texto publicado com sucesso!');
+                        newTextModal.style.display = 'none';
+                        newTextForm.reset();
+                        // Refresh texts
+                        const { data: textsData, error: textsError } = await _supabase
+                            .from('texts')
+                            .select('*');
+                        if (textsError) {
+                            console.error('Erro ao buscar textos:', textsError);
+                        } else {
+                            texts = textsData.map(text => ({
+                                ...text,
+                                date: new Date(text.created_at).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })
+                            }));
+                            updateUI();
+                        }
+                    }
+                }
+                else{
+                    showToast('Você precisa estar logado para publicar um texto.', 'error');
                 }
             });
 
             _supabase.auth.onAuthStateChange((event, session) => {
                 if (session) {
+                    userInfo.classList.remove('hidden');
+                    userEmail.textContent = session.user.email;
                     authButton.innerHTML = `${logoutIcon}<span>Logout</span>`;
+                    newTextButton.style.display = 'flex';
                 } else {
+                    userInfo.classList.add('hidden');
+                    userEmail.textContent = '';
                     authButton.innerHTML = `${loginIcon}<span>Login</span>`;
+                    newTextButton.style.display = 'none';
                 }
             });
 
