@@ -1,8 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
-
     // 1. Configuração do Cliente Supabase
-    const SUPABASE_URL = config.SUPABASE_URL || 'https://wqizowhlldxdjqrlnhem.supabase.co';
-    const SUPABASE_ANON_KEY = config.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxaXpvd2hsbGR4ZGpxcmxuaGVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUzNjc3ODgsImV4cCI6MjA3MDk0Mzc4OH0.pePf3lEU5a6YthPV7j7VJeXI4FbBJxMeYCRthJ08JGk';
+    if (typeof window.SUPABASE_URL !== 'undefined') {
+        // Ambiente de Desenvolvimento: Usa as variáveis GLOBAIS definidas pelo config.js
+        console.log("Ambiente de Desenvolvimento: Usando variáveis do window.");
+        var SUPABASE_URL = window.SUPABASE_URL;
+        var SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY;
+    } else {
+        // Ambiente de Produção: Define as variáveis de fallback que a Action substituirá.
+        console.log("Ambiente de Produção: Definindo variáveis de fallback.");
+        var SUPABASE_URL = 'https://wqizowhlldxdjqrlnhem.supabase.co';
+        var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxaXpvd2hsbGR4ZGpxcmxuaGVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUzNjc3ODgsImV4cCI6MjA3MDk0Mzc4OH0.pePf3lEU5a6YthPV7j7VJeXI4FbBJxMeYCRthJ08JGk';
+    }
 
     const { createClient } = supabase;
     const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
