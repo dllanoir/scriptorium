@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -34,6 +35,12 @@
                     </svg>
                 </button>
             </header>
+            <button id="new-text-button" style="display: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                <span>Novo Texto</span>
+            </button>
             <nav>
                 <h2>COLEÇÕES</h2>
                 <ul id="collections-list">
@@ -41,6 +48,9 @@
                 </ul>
             </nav>
             <footer>
+                <div id="user-info" class="hidden">
+                    <p id="user-email"></p>
+                </div>
                 <button id="auth-button"></button>
             </footer>
         </aside>
@@ -110,7 +120,32 @@
             </form>
         </div>
     </div>
+
+    <!-- TELA DE NOVO TEXTO -->
+    <div id="new-text-modal" style="display: none;">
+        <div id="new-text-overlay"></div>
+        <div id="new-text-container">
+            <button id="close-new-text-button">&times;</button>
+            <form id="new-text-form">
+                <h2>Novo Texto</h2>
+                <div class="form-group">
+                    <label for="new-title">Título</label>
+                    <input type="text" id="new-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-collection">Coleção</label>
+                    <select id="new-collection" required></select>
+                </div>
+                <div class="form-group">
+                    <label for="new-content">Texto</label>
+                    <textarea id="new-content" rows="10" required></textarea>
+                </div>
+                <button type="submit">Publicar</button>
+            </form>
+        </div>
+    </div>
     <script src="config.js" defer></script>
     <script src="script.js" type="module" defer></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </body>
 </html>
