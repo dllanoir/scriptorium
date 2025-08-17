@@ -1,8 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
-
     // 1. Configuração do Cliente Supabase
-    const SUPABASE_URL = config.SUPABASE_URL || '__SUPABASE_URL__';
-    const SUPABASE_ANON_KEY = config.SUPABASE_ANON_KEY || '__SUPABASE_ANON_KEY__';
+    if (typeof window.SUPABASE_URL !== 'undefined') {
+        // Ambiente de Desenvolvimento: Usa as variáveis GLOBAIS definidas pelo config.js
+        console.log("Ambiente de Desenvolvimento: Usando variáveis do window.");
+        var SUPABASE_URL = window.SUPABASE_URL;
+        var SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY;
+    } else {
+        // Ambiente de Produção: Define as variáveis de fallback que a Action substituirá.
+        console.log("Ambiente de Produção: Definindo variáveis de fallback.");
+        var SUPABASE_URL = '__SUPABASE_URL__';
+        var SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY__';
+    }
 
     const { createClient } = supabase;
     const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
