@@ -1,11 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- BANCO DE DADOS ---
-    let collections = [];
-    let texts = [];
+
+    // 1. Configuração do Cliente Supabase
+    const SUPABASE_URL = 'https://wqizowhlldxdjqrlnhem.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxaXpvd2hsbGR4ZGpxcmxuaGVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUzNjc3ODgsImV4cCI6MjA3MDk0Mzc4OH0.pePf3lEU5a6YthPV7j7VJeXI4FbBJxMeYCRthJ08JGk';
+
+    const { createClient } = supabase;
+    const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // --- ESTADO DA APLICAÇÃO ---
+    let collections = [];
+    let texts = [];
     let activeCollectionId = 1;
-    let activeTextId = null; // Será definido após carregar os dados
+    let activeTextId = null;
 
     // --- ELEMENTOS DO DOM ---
     const collectionsList = document.getElementById('collections-list');
@@ -34,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let textsToRender = texts;
 
         if (collectionId !== 1) {
-            textsToRender = textsToRender.filter(t => t.collectionId === collectionId);
+            textsToRender = textsToRender.filter(t => parseInt(t.collectionId, 10) === parseInt(collectionId, 10));
         }
 
         if (searchTerm) {
@@ -75,9 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
         activeCollectionId = collectionId;
         let textsInCollection = texts;
         if(collectionId !== 1) {
-            textsInCollection = texts.filter(t => t.collectionId === collectionId);
+            textsInCollection = texts.filter(t => parseInt(t.collectionId, 10) === parseInt(collectionId, 10));
         }
-        
         activeTextId = textsInCollection[0]?.id || null;
         
         updateUI();
@@ -96,14 +101,32 @@ document.addEventListener('DOMContentLoaded', () => {
     
     async function initializeApp() {
         try {
-            const response = await fetch('database.json');
-            const data = await response.json();
-            collections = data.collections;
-            texts = data.texts;
+            const { data: collectionsData, error: collectionsError } = await _supabase
+                .from('collections')
+                .select('*');
 
-            // Definir estado inicial depois que os dados são carregados
+            if (collectionsError) {
+                console.error('Erro ao buscar coleções:', collectionsError);
+                return;
+            }
+            collections = collectionsData;
+
+            const { data: textsData, error: textsError } = await _supabase
+                .from('texts')
+                .select('*');
+
+            if (textsError) {
+                console.error('Erro ao buscar textos:', textsError);
+                return;
+            }
+            
+            texts = textsData.map(text => ({
+                ...text,
+                date: new Date(text.created_at).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })
+            }));
+
             if (texts.length > 0) {
-                activeTextId = 1;
+                setActiveCollection(1);
             }
 
             // --- EVENT LISTENERS ---
