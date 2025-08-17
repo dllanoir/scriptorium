@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // 1. Configuração do Cliente Supabase
-    const SUPABASE_URL = '__SUPABASE_URL__';
-    const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY__';
+    const SUPABASE_URL = config.SUPABASE_URL || '__SUPABASE_URL__';
+    const SUPABASE_ANON_KEY = config.SUPABASE_ANON_KEY || '__SUPABASE_ANON_KEY__';
 
     const { createClient } = supabase;
     const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
