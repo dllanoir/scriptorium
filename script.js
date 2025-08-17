@@ -1,11 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- BANCO DE DADOS ---
-    let collections = [];
-    let texts = [];
+
+    // 1. Configuração do Cliente Supabase
+    const SUPABASE_URL = '__SUPABASE_URL__';
+    const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY__';
+
+    const { createClient } = supabase;
+    const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // --- ESTADO DA APLICAÇÃO ---
+    let collections = [];
+    let texts = [];
     let activeCollectionId = 1;
-    let activeTextId = null; // Será definido após carregar os dados
+    let activeTextId = null;
 
     // --- ELEMENTOS DO DOM ---
     const collectionsList = document.getElementById('collections-list');
@@ -15,6 +21,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const textBody = document.getElementById('text-body');
     const emptyState = document.getElementById('empty-state');
     const contentDisplay = document.getElementById('content-display');
+    const authButton = document.getElementById('auth-button');
+    const loginModal = document.getElementById('login-modal');
+    const closeLoginButton = document.getElementById('close-login-button');
+    const loginOverlay = document.getElementById('login-overlay');
+    const loginForm = document.getElementById('login-form');
+    const loginError = document.getElementById('login-error');
+
+    // --- ÍCONES ---
+    const loginIcon = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="24" height="24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m-3 0l-3-3m0 0l3-3m-3 3h12" />
+    </svg>`;
+    const logoutIcon = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="24" height="24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+    </svg>`;
 
     // --- FUNÇÕES DE RENDERIZAÇÃO ---
 
@@ -34,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let textsToRender = texts;
 
         if (collectionId !== 1) {
-            textsToRender = textsToRender.filter(t => t.collectionId === collectionId);
+            textsToRender = textsToRender.filter(t => parseInt(t.collectionId, 10) === parseInt(collectionId, 10));
         }
 
         if (searchTerm) {
@@ -56,14 +76,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderTextContent(textId) {
         const text = texts.find(t => t.id === textId);
         if (!text) {
-            emptyState.classList.remove('hidden');
-            emptyState.classList.add('flex');
-            contentDisplay.classList.add('hidden');
+            emptyState.style.display = 'flex';
+            contentDisplay.style.display = 'none';
             return;
         }
-        emptyState.classList.add('hidden');
-        emptyState.classList.remove('flex');
-        contentDisplay.classList.remove('hidden');
+        emptyState.style.display = 'none';
+        contentDisplay.style.display = 'block';
 
         textTitle.textContent = text.title;
         textDate.textContent = text.date;
@@ -75,9 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
         activeCollectionId = collectionId;
         let textsInCollection = texts;
         if(collectionId !== 1) {
-            textsInCollection = texts.filter(t => t.collectionId === collectionId);
+            textsInCollection = texts.filter(t => parseInt(t.collectionId, 10) === parseInt(collectionId, 10));
         }
-        
         activeTextId = textsInCollection[0]?.id || null;
         
         updateUI();
@@ -96,14 +113,32 @@ document.addEventListener('DOMContentLoaded', () => {
     
     async function initializeApp() {
         try {
-            const response = await fetch('database.json');
-            const data = await response.json();
-            collections = data.collections;
-            texts = data.texts;
+            const { data: collectionsData, error: collectionsError } = await _supabase
+                .from('collections')
+                .select('*');
 
-            // Definir estado inicial depois que os dados são carregados
+            if (collectionsError) {
+                console.error('Erro ao buscar coleções:', collectionsError);
+                return;
+            }
+            collections = collectionsData;
+
+            const { data: textsData, error: textsError } = await _supabase
+                .from('texts')
+                .select('*');
+
+            if (textsError) {
+                console.error('Erro ao buscar textos:', textsError);
+                return;
+            }
+            
+            texts = textsData.map(text => ({
+                ...text,
+                date: new Date(text.created_at).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })
+            }));
+
             if (texts.length > 0) {
-                activeTextId = 1;
+                setActiveCollection(1);
             }
 
             // --- EVENT LISTENERS ---
@@ -125,6 +160,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
             document.getElementById('search-box').addEventListener('input', (e) => {
                 renderTextList(activeCollectionId, e.target.value);
+            });
+
+            authButton.addEventListener('click', async () => {
+                const { data: { session } } = await _supabase.auth.getSession();
+                if (session) {
+                    await _supabase.auth.signOut();
+                } else {
+                    loginModal.style.display = 'flex';
+                }
+            });
+
+            closeLoginButton.addEventListener('click', () => {
+                loginModal.style.display = 'none';
+            });
+
+            loginOverlay.addEventListener('click', () => {
+                loginModal.style.display = 'none';
+            });
+
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = e.target.email.value;
+                const password = e.target.password.value;
+
+                const { error } = await _supabase.auth.signInWithPassword({
+                    email,
+                    password,
+                });
+
+                if (error) {
+                    loginError.textContent = 'Usuário ou senha inválidos';
+                    loginError.classList.remove('hidden');
+                } else {
+                    loginModal.style.display = 'none';
+                    loginError.classList.add('hidden');
+                }
+            });
+
+            _supabase.auth.onAuthStateChange((event, session) => {
+                if (session) {
+                    authButton.innerHTML = `${logoutIcon}<span>Logout</span>`;
+                } else {
+                    authButton.innerHTML = `${loginIcon}<span>Login</span>`;
+                }
             });
 
             // --- MOBILE NAVIGATION ---
