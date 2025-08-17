@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // 1. Configuração do Cliente Supabase
-    const SUPABASE_URL = '__SUPABASE_URL__';
-    const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY__';
+    const SUPABASE_URL = 'https://wqizowhlldxdjqrlnhem.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxaXpvd2hsbGR4ZGpxcmxuaGVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUzNjc3ODgsImV4cCI6MjA3MDk0Mzc4OH0.pePf3lEU5a6YthPV7j7VJeXI4FbBJxMeYCRthJ08JGk';
 
     const { createClient } = supabase;
     const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
