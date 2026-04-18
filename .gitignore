@@ -1,1 +1,2 @@
-/config.js
+# Ignorar dependências do Node (se futuramente tiver)
+node_modules/

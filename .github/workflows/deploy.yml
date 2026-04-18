@@ -19,31 +19,10 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
 
-      - name: Debug and Replace Credentials 🕵️
+      - name: Debug and Check Setup 🕵️
         run: |
-          echo "Verificando se o arquivo script.js existe..."
-          ls -l script.js
-          
-          echo "--- Conteúdo do script.js ANTES da substituição ---"
-          cat script.js
-          echo "----------------------------------------------------"
-
-          # Este bloco vai falhar o workflow se os secrets estiverem vazios, nos dando um erro claro.
-          if [ -z "${{ secrets.SUPABASE_URL }}" ]; then
-            echo "ERRO: O secret SUPABASE_URL não está definido ou está vazio."
-            exit 1
-          fi
-          if [ -z "${{ secrets.SUPABASE_ANON_KEY }}" ]; then
-            echo "ERRO: O secret SUPABASE_ANON_KEY não está definido ou está vazio."
-            exit 1
-          fi
-          echo "Secrets encontrados. Tentando a substituição..."
-
-          # Comando de substituição
-          sed -i "s|__SUPABASE_URL__|${{ secrets.SUPABASE_URL }}|g" script.js
-          sed -i "s|__SUPABASE_ANON_KEY__|${{ secrets.SUPABASE_ANON_KEY }}|g" script.js
-          
-          echo "Substituição concluída com sucesso."
+          echo "Aplicação movida para estrutura ES Module nativa."
+          echo "Iniciando build de frontend estático..."
         
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
