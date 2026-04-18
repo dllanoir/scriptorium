@@ -71,6 +71,18 @@ function attachEventListeners() {
     DOM.backToReadingBtn.addEventListener('click', UI.hideMobileTextList);
     DOM.showTextListBtn.addEventListener('click', UI.showMobileTextList);
 
+    if (DOM.settingsBtn && DOM.settingsModal) {
+        DOM.settingsBtn.addEventListener('click', () => {
+            UI.toggleModal(DOM.settingsModal, true);
+        });
+    }
+    
+    if (DOM.helpBtn && DOM.helpModal) {
+        DOM.helpBtn.addEventListener('click', () => {
+            UI.toggleModal(DOM.helpModal, true);
+        });
+    }
+
     window.addEventListener('resize', () => {
         if (window.innerWidth >= 768) {
             DOM.sidebar.classList.remove('-translate-x-full');
