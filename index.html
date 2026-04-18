@@ -3,209 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Scriptorium - O Santuário Digital.">
+    <title>Scriptorium - The Digital Sanctuary</title>
     
     <!-- CSP Meta Tag for security -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://*.supabase.co; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://*.supabase.co https://cdn.jsdelivr.net;">
     
-    <title>Scriptorium · Leituras e Coleções</title>
-    
-    <!-- Fonts: Zen-Modernist Design System -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Manrope:wght@200..800&display=swap" rel="stylesheet"/>
     
-    <!-- Toastify CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
-    <!-- CSS Modules (Vanilla) -->
+    <!-- CSS Modules -->
     <link rel="stylesheet" href="assets/css/variables.css">
     <link rel="stylesheet" href="assets/css/base.css">
     <link rel="stylesheet" href="assets/css/components.css">
     <link rel="stylesheet" href="assets/css/layout.css">
 </head>
-<body>
+<body class="bg-surface text-on-surface font-body antialiased hide-scrollbar">
 
-    <!-- Mobile menu toggle -->
-    <button id="mobile-menu-toggle" aria-label="Abrir Menu">
-        <span class="material-symbols-outlined">menu</span>
-    </button>
-    <div id="mobile-overlay" class="hidden"></div>
-
-    <!-- Top Navigation Bar -->
-    <nav class="top-navbar">
-        <div class="nav-brand">Scriptorium</div>
-        
-        <div class="nav-actions flex items-center gap-2">
-            <button id="new-text-button" class="nav-action hidden" style="display: none;">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">edit</span>
-                <span>Novo Texto</span>
-            </button>
-            <button id="auth-button" class="nav-action">
-                Sign In
-            </button>
-            <div id="user-info" class="hidden flex items-center gap-2" style="margin-left: 1rem;">
-                <span id="user-email" class="font-label text-xs" style="color: var(--on-surface-variant)"></span>
+    <!-- TopNavBar -->
+    <nav class="stitch-nav">
+        <div class="stitch-nav-inner">
+            <div class="font-headline italic text-on-surface" style="font-size: 1.5rem; letter-spacing: 0.1em;">Scriptorium</div>
+            <div class="hidden md:flex space-x-8" style="gap: 2rem;">
+                <a class="text-on-surface font-headline tracking-tight" style="font-size: 1.125rem; border-bottom: 2px solid var(--on-surface); padding-bottom: 0.25rem; text-decoration: none;" href="#">Essays</a>
+                <a class="text-on-surface-variant font-headline tracking-tight" style="font-size: 1.125rem; text-decoration: none;" href="#">Library</a>
+                <a class="text-on-surface-variant font-headline tracking-tight" style="font-size: 1.125rem; text-decoration: none;" href="#">Archives</a>
+            </div>
+            <div class="flex items-center" style="gap: 1.5rem;">
+                <button id="new-text-button" class="nav-btn">
+                    <span class="material-symbols-outlined icon-18" style="font-variation-settings: 'FILL' 0;">edit</span>
+                    <span>New Text</span>
+                </button>
+                <button id="auth-button" class="nav-btn">
+                    Sign In
+                </button>
             </div>
         </div>
     </nav>
 
-    <!-- Main App Container -->
-    <div id="app">
-
-        <!-- PAINEL 1: COLEÇÕES (Sidebar) -->
-        <aside class="-translate-x-full">
-            <header></header> <!-- kept for JS dom backwards compat -->
-            
-            <div class="search-container">
-                <span class="material-symbols-outlined search-icon" data-icon="search">search</span>
-                <input type="search" id="search-box" placeholder="Search..." aria-label="Procurar textos">
+    <!-- App Container -->
+    <div id="app" class="stitch-app-container">
+        
+        <!-- SIDEBAR -->
+        <aside class="stitch-sidebar">
+            <div class="sidebar-search-box">
+                <input type="text" id="search-box" class="sidebar-search-input" placeholder="Search...">
+                <span class="material-symbols-outlined sidebar-search-icon" data-icon="search">search</span>
             </div>
-
-            <nav aria-label="Coleções" class="flex-col mt-4">
-                <div class="font-headline" style="font-size: 1.25rem; color: var(--on-surface); margin-bottom: 0.25rem;">Collections</div>
-                <div class="font-label" style="font-size: 0.65rem; color: var(--on-surface-variant); margin-bottom: 1.5rem;">Personal Reliquary</div>
+            
+            <div class="flex-col" style="gap: 0.25rem;">
+                <div class="font-headline" style="font-size: 1.25rem; color: #e5e7eb; margin-bottom: 0.25rem;">Collections</div>
+                <div class="font-label" style="color: #6b7280; font-size: 0.75rem; letter-spacing: 0.1em; margin-bottom: 1.5rem; text-transform: uppercase;">Personal Reliquary</div>
                 
-                <ul id="collections-list">
-                    <!-- Dynamic collections injected here by JS -->
-                    <li class="collection-item skeleton-loader" style="height: 36px;"></li>
-                </ul>
-            </nav>
-            <button id="close-sidebar" aria-label="Fechar Coleções"></button>
-            <footer></footer>
+                <nav id="collections-list" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <!-- JS Collections -->
+                </nav>
+            </div>
         </aside>
 
-        <!-- PAINEL 2: LISTA DE TEXTOS -->
-        <section id="text-list-section" class="translate-x-full">
-            <header style="display: none;"></header>
+        <!-- (HIDDEN MIDDLE PANEL, KEPT FOR JS COMPAT) -->
+        <section id="text-list-section" style="display: none;"></section>
+        <div id="text-list-container" style="display: none;"></div>
+
+        <!-- MAIN READING PANE -->
+        <main class="stitch-main hide-scrollbar" id="reading-pane">
             
-            <div id="text-list-container">
-                <!-- Textos da coleção selecionada -->
-                <div class="text-item skeleton-loader" style="height: 70px;"></div>
+            <!-- Default Empty State -->
+            <div id="empty-state" class="state-container">
+                <div class="state-icon-bg">
+                    <span class="material-symbols-outlined" style="font-size: 2rem;">auto_stories</span>
+                </div>
+                <h3>Santuário Digital</h3>
+                <p>Selecione um texto para começar a leitura, ou adicione novos trechos.</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="error-state" class="state-container hidden">
+                <div class="state-content error-content">
+                    <span class="material-symbols-outlined" style="font-size: 3rem; color: var(--error);">error</span>
+                    <h3>Ops! Algo deu errado</h3>
+                    <p id="error-message">Não foi possível carregar os dados.</p>
+                    <button id="retry-button" class="btn-secondary mt-4" style="padding: 0.5rem 1rem;">Tentar Novamente</button>
+                </div>
             </div>
             
-            <button id="back-to-reading" class="btn btn-ghost">
-                <span class="material-symbols-outlined" style="margin-right: 8px">arrow_back</span>
-                Voltar
-            </button>
-        </section>
-
-        <!-- PAINEL 3: ÁREA DE LEITURA -->
-        <main>
-            <div id="reading-pane">
-                
-                <div id="empty-state" class="state-container hidden">
-                    <div class="state-icon-bg">
-                        <span class="material-symbols-outlined" style="font-size: 2rem;">auto_stories</span>
-                    </div>
-                    <h3>Nenhum texto selecionado</h3>
-                    <p>Selecione um texto na lista para começar a leitura, ou refine sua busca.</p>
+            <article class="stitch-article hidden" id="content-display">
+                <header class="article-header">
+                    <div class="article-accent-line"></div>
+                    <time id="text-date" datetime=""></time>
+                    <h1 id="text-title"></h1>
+                </header>
+                <div id="text-body" class="prose">
+                    <!-- JS injected content -->
                 </div>
-
-                <div id="error-state" class="state-container hidden">
-                    <div class="state-content error-content">
-                        <span class="material-symbols-outlined" style="font-size: 3rem; color: var(--error);">error</span>
-                        <h3>Ops! Algo deu errado</h3>
-                        <p id="error-message">Não foi possível carregar os dados.</p>
-                        <button id="retry-button" class="btn btn-secondary mt-4">Tentar Novamente</button>
-                    </div>
-                </div>
-
-                <div id="content-display" class="hidden w-full">
-                    <div class="show-text-list-container">
-                        <button id="show-text-list" class="btn btn-ghost" aria-label="Ver lista">
-                            <span class="material-symbols-outlined" style="margin-right: 8px;">menu</span>
-                            Ver lista de textos
-                        </button>
-                    </div>
-                    
-                    <header class="content-header w-full">
-                        <time id="text-date" datetime=""></time>
-                        <h1 id="text-title"></h1>
-                    </header>
-                    <article id="text-body" class="prose w-full">
-                        <!-- Conteúdo selecionado -->
-                    </article>
-                </div>
-            </div>
+            </article>
         </main>
     </div>
 
-    <!-- MODAL DE LOGIN -->
+    <!-- TELA DE LOGIN -->
     <dialog id="login-modal" class="modal">
-        <div class="modal-overlay" data-close="login-modal"></div>
+        <div class="modal-overlay" data-close="login-modal" style="position:absolute; inset:0;"></div>
         <div class="modal-container">
+            <div class="modal-top-accent"></div>
             <button class="close-modal-button" data-close="login-modal" aria-label="Fechar">
                 <span class="material-symbols-outlined">close</span>
             </button>
+            <h2 class="font-headline" style="font-size: 1.875rem; color: var(--on-surface); font-weight: 300; margin-bottom: 0.5rem;">Enter Sanctuary</h2>
+            <p class="font-body" style="font-size: 0.875rem; color: var(--on-surface-variant); margin-bottom: 2rem;">Authenticate to access your reliquary.</p>
+            
             <form id="login-form">
-                <div class="modal-header">
-                    <h2>Enter Sanctuary</h2>
-                    <p>Authenticate to access your reliquary.</p>
+                <div class="form-group">
+                    <input type="email" id="email" class="floating-input" placeholder=" ">
+                    <label for="email" class="floating-label">Email Address</label>
                 </div>
-                <div class="form-group flex-col" style="margin-top: 1rem;">
-                    <label for="email">E-mail</label>
-                    <input type="email" id="email" required placeholder="">
+                <div class="form-group">
+                    <input type="password" id="password" class="floating-input" placeholder=" ">
+                    <label for="password" class="floating-label">Password</label>
                 </div>
-                <div class="form-group flex-col">
-                    <label for="password">Senha</label>
-                    <input type="password" id="password" required placeholder="">
-                </div>
-                <div class="form-actions" style="justify-content: center; border: none;">
-                    <button type="submit" class="btn btn-primary w-full" style="padding: 1rem 0;">Entrar</button>
-                </div>
-                <div id="login-error" class="hidden error-text"></div>
+                <button type="submit" class="btn-primary" style="margin-top: 2rem;">Sign In</button>
+                <div id="login-error" class="error-text hidden"></div>
             </form>
         </div>
     </dialog>
 
-    <!-- MODAL NOVO TEXTO -->
-    <dialog id="new-text-modal" class="modal">
-        <div class="modal-overlay" data-close="new-text-modal"></div>
-        <div class="modal-container modal-large">
-            <button class="close-modal-button" data-close="new-text-modal" aria-label="Fechar">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-            <form id="new-text-form">
-                <div class="modal-header">
-                    <h2>Novo Texto</h2>
-                    <p>Adicione um novo artigo à coleção.</p>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group flex-1">
-                        <label for="new-title">Título</label>
-                        <input type="text" id="new-title" required placeholder="">
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group flex-1" style="margin-bottom: 1rem;">
-                        <label for="new-collection" style="position: relative; top: 0; margin-bottom: 0.5rem; display: block;">Coleção</label>
-                        <div class="select-wrapper">
-                            <select id="new-collection" required style="border-bottom: 1px solid rgba(72,72,72,0.2)"></select>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-group" style="margin-top: 1rem;">
-                    <textarea id="new-content" required placeholder="Begin drafting..."></textarea>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-ghost" data-close="new-text-modal">Discard</button>
-                    <button type="submit" class="btn btn-primary">
-                        <span class="material-symbols-outlined" style="font-size: 16px; margin-right: 4px;">save</span>
-                        Save Draft
-                    </button>
-                </div>
-            </form>
-        </div>
-    </dialog>
-    
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script type="module" src="src/app.js"></script>
+
+    <!-- (DUMMY ELEMENTS FOR DOM.JS) -->
+    <div id="mobile-overlay" style="display:none;"></div>
+    <button id="mobile-menu-toggle" style="display:none;"></button>
+    <button id="close-sidebar" style="display:none;"></button>
+    <button id="back-to-reading" style="display:none;"></button>
+    <button id="show-text-list" style="display:none;"></button>
+    
+    <dialog id="new-text-modal" style="display:none;">
+        <form id="new-text-form">
+            <select id="new-collection"></select>
+        </form>
+    </dialog>
 </body>
 </html>
