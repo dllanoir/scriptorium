@@ -192,3 +192,14 @@
   font-size: 0.75rem;
   color: var(--primary);
 }
+
+/* Toastify Customization */
+.custom-toast {
+  font-family: var(--font-body) !important;
+  border-radius: var(--radius-sm) !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5) !important;
+  padding: 1rem 1.5rem !important;
+  color: #fff !important;
+  font-size: 0.875rem !important;
+  z-index: 9999 !important;
+}
