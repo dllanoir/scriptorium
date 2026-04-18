@@ -43,9 +43,7 @@ jobs:
           sed -i "s|__SUPABASE_URL__|${{ secrets.SUPABASE_URL }}|g" script.js
           sed -i "s|__SUPABASE_ANON_KEY__|${{ secrets.SUPABASE_ANON_KEY }}|g" script.js
           
-          echo "--- Conteúdo do script.js DEPOIS da substituição ---"
-          cat script.js
-          echo "----------------------------------------------------"
+          echo "Substituição concluída com sucesso."
         
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
