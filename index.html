@@ -61,6 +61,17 @@
                     <!-- JS Collections -->
                 </nav>
             </div>
+            
+            <div style="margin-top: auto; padding-top: 2rem; border-top: 1px solid rgba(72,72,72,0.1); display: flex; flex-direction: column; gap: 0.5rem;">
+                <a class="collection-link" id="settings-button">
+                    <span class="material-symbols-outlined icon-16" data-icon="settings">settings</span>
+                    <span>Settings</span>
+                </a>
+                <a class="collection-link" id="help-button">
+                    <span class="material-symbols-outlined icon-16" data-icon="help_outline">help_outline</span>
+                    <span>Help</span>
+                </a>
+            </div>
         </aside>
 
         <!-- (HIDDEN MIDDLE PANEL, KEPT FOR JS COMPAT) -->
@@ -125,6 +136,49 @@
                 <button type="submit" class="btn-primary" style="margin-top: 2rem;">Sign In</button>
                 <div id="login-error" class="error-text hidden"></div>
             </form>
+        </div>
+    </dialog>
+
+    <!-- SETTINGS MODAL -->
+    <dialog id="settings-modal" class="modal">
+        <div class="modal-overlay" data-close="settings-modal" style="position:absolute; inset:0;"></div>
+        <div class="modal-container">
+            <div class="modal-top-accent"></div>
+            <button class="close-modal-button" data-close="settings-modal" aria-label="Fechar">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <h2 class="font-headline" style="font-size: 1.875rem; color: var(--on-surface); font-weight: 300; margin-bottom: 0.5rem;">Settings</h2>
+            <p class="font-body" style="font-size: 0.875rem; color: var(--on-surface-variant); margin-bottom: 2rem;">System preferences and aesthetics.</p>
+            
+            <div class="prose">
+                <p>Configurações de layout, temas e perfil estarão em breve contidos neste modal adaptado ao estilo central do Santuário Digital.</p>
+            </div>
+            
+            <div class="form-actions" style="border-top: none; justify-content: flex-end;">
+                 <button type="button" class="btn-ghost" data-close="settings-modal">Fechar</button>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- HELP MODAL -->
+    <dialog id="help-modal" class="modal">
+        <div class="modal-overlay" data-close="help-modal" style="position:absolute; inset:0;"></div>
+        <div class="modal-container">
+            <div class="modal-top-accent"></div>
+            <button class="close-modal-button" data-close="help-modal" aria-label="Fechar">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <h2 class="font-headline" style="font-size: 1.875rem; color: var(--on-surface); font-weight: 300; margin-bottom: 0.5rem;">Help</h2>
+            <p class="font-body" style="font-size: 0.875rem; color: var(--on-surface-variant); margin-bottom: 2rem;">Sanctuary Instructions.</p>
+            
+            <div class="prose">
+                <p>Navegue pelas suas coleções na barra lateral The Reliquary.</p>
+                <p>Autentique-se usando o botão Sign In no topo para permitir a criação e gravação de novos textos originais.</p>
+            </div>
+            
+            <div class="form-actions" style="border-top: none; justify-content: flex-end;">
+                 <button type="button" class="btn-ghost" data-close="help-modal">Entendido</button>
+            </div>
         </div>
     </dialog>
 

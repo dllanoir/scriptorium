@@ -43,5 +43,10 @@ export function initDOM() {
         closeSidebarBtn: document.getElementById('close-sidebar'),
         backToReadingBtn: document.getElementById('back-to-reading'),
         showTextListBtn: document.getElementById('show-text-list'),
+        
+        settingsBtn: document.getElementById('settings-button'),
+        helpBtn: document.getElementById('help-button'),
+        settingsModal: document.getElementById('settings-modal'),
+        helpModal: document.getElementById('help-modal')
     });
 }
