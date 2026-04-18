@@ -6,8 +6,8 @@ export const UI = {
     renderCollections: () => {
         DOM.collectionsList.innerHTML = '';
         State.collections.forEach(col => {
-            const li = document.createElement('li');
-            li.className = `collection-item ${col.id === State.activeCollectionId ? 'active' : ''}`;
+            const li = document.createElement('a'); // Anchor makes it better for hover states
+            li.className = `collection-link ${col.id === State.activeCollectionId ? 'active' : ''}`;
             li.dataset.collectionId = col.id;
             
             li.innerHTML = `${Icons.collection}<span></span>`;

@@ -11,7 +11,7 @@ function attachEventListeners() {
     });
 
     DOM.collectionsList.addEventListener('click', (e) => {
-        const item = e.target.closest('.collection-item');
+        const item = e.target.closest('.collection-link');
         if (item) {
             const id = parseInt(item.dataset.collectionId, 10);
             Controllers.handleCollectionSelect(id);
