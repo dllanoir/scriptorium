@@ -1,107 +1,92 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Scriptorium - Um ambiente minimalista e focado para leitura e armazenamento de textos.">
+    <meta name="description" content="Scriptorium - O Santuário Digital.">
     
     <!-- CSP Meta Tag for security -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://*.supabase.co; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://*.supabase.co https://cdn.jsdelivr.net;">
     
     <title>Scriptorium · Leituras e Coleções</title>
     
-    <!-- Fonts -->
+    <!-- Fonts: Zen-Modernist Design System -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@350;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Manrope:wght@200..800&display=swap" rel="stylesheet"/>
     
-    <!-- CSS Modules -->
+    <!-- Toastify CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    <!-- CSS Modules (Vanilla) -->
     <link rel="stylesheet" href="assets/css/variables.css">
     <link rel="stylesheet" href="assets/css/base.css">
     <link rel="stylesheet" href="assets/css/components.css">
     <link rel="stylesheet" href="assets/css/layout.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 <body>
 
-    <!-- Menu móvel toggle -->
-    <div id="mobile-menu-toggle" aria-label="Abrir Menu">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-    </div>
+    <!-- Mobile menu toggle -->
+    <button id="mobile-menu-toggle" aria-label="Abrir Menu">
+        <span class="material-symbols-outlined">menu</span>
+    </button>
+    <div id="mobile-overlay" class="hidden"></div>
 
+    <!-- Top Navigation Bar -->
+    <nav class="top-navbar">
+        <div class="nav-brand">Scriptorium</div>
+        
+        <div class="nav-actions flex items-center gap-2">
+            <button id="new-text-button" class="nav-action hidden" style="display: none;">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">edit</span>
+                <span>Novo Texto</span>
+            </button>
+            <button id="auth-button" class="nav-action">
+                Sign In
+            </button>
+            <div id="user-info" class="hidden flex items-center gap-2" style="margin-left: 1rem;">
+                <span id="user-email" class="font-label text-xs" style="color: var(--on-surface-variant)"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main App Container -->
     <div id="app">
-        <!-- Overlay para mobile -->
-        <div id="mobile-overlay" class="hidden"></div>
 
         <!-- PAINEL 1: COLEÇÕES (Sidebar) -->
         <aside class="-translate-x-full">
-            <header>
-                <div class="brand">
-                    <svg viewBox="0 0 24 24" fill="none" class="brand-icon" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <h1>Scriptorium</h1>
-                </div>
-                <button id="close-sidebar" aria-label="Fechar Coleções">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </header>
+            <header></header> <!-- kept for JS dom backwards compat -->
             
-            <button id="new-text-button" class="btn btn-primary" style="display: none;">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-                <span>Novo Texto</span>
-            </button>
-            
-            <nav aria-label="Coleções">
-                <h2>COLEÇÕES</h2>
+            <div class="search-container">
+                <span class="material-symbols-outlined search-icon" data-icon="search">search</span>
+                <input type="search" id="search-box" placeholder="Search..." aria-label="Procurar textos">
+            </div>
+
+            <nav aria-label="Coleções" class="flex-col mt-4">
+                <div class="font-headline" style="font-size: 1.25rem; color: var(--on-surface); margin-bottom: 0.25rem;">Collections</div>
+                <div class="font-label" style="font-size: 0.65rem; color: var(--on-surface-variant); margin-bottom: 1.5rem;">Personal Reliquary</div>
+                
                 <ul id="collections-list">
-                    <!-- Coleções serão inseridas aqui pelo JS -->
-                    <li class="collection-item skeleton-loader" style="height: 36px; border-radius: 8px;"></li>
-                    <li class="collection-item skeleton-loader" style="height: 36px; border-radius: 8px;"></li>
+                    <!-- Dynamic collections injected here by JS -->
+                    <li class="collection-item skeleton-loader" style="height: 36px;"></li>
                 </ul>
             </nav>
-            
-            <footer>
-                <div id="user-info" class="hidden">
-                    <p id="user-email" class="text-sm"></p>
-                </div>
-                <button id="auth-button" class="btn btn-secondary">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20" height="20">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m-3 0l-3-3m0 0l3-3m-3 3h12" />
-                    </svg>
-                    <span>Login</span>
-                </button>
-            </footer>
+            <button id="close-sidebar" aria-label="Fechar Coleções"></button>
+            <footer></footer>
         </aside>
 
         <!-- PAINEL 2: LISTA DE TEXTOS -->
-        <section id="text-list-section">
-            <header>
-                <div class="search-container">
-                    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    <input type="search" id="search-box" placeholder="Procurar textos..." aria-label="Procurar textos">
-                </div>
-            </header>
+        <section id="text-list-section" class="translate-x-full">
+            <header style="display: none;"></header>
             
             <div id="text-list-container">
-                <!-- Textos da coleção selecionada serão inseridos aqui -->
-                <div class="text-item skeleton-loader" style="height: 70px; margin-bottom: 8px; border-radius: 8px;"></div>
-                <div class="text-item skeleton-loader" style="height: 70px; margin-bottom: 8px; border-radius: 8px;"></div>
-                <div class="text-item skeleton-loader" style="height: 70px; margin-bottom: 8px; border-radius: 8px;"></div>
+                <!-- Textos da coleção selecionada -->
+                <div class="text-item skeleton-loader" style="height: 70px;"></div>
             </div>
             
             <button id="back-to-reading" class="btn btn-ghost">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20" style="margin-right: 8px">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
+                <span class="material-symbols-outlined" style="margin-right: 8px">arrow_back</span>
                 Voltar
             </button>
         </section>
@@ -111,79 +96,77 @@
             <div id="reading-pane">
                 
                 <div id="empty-state" class="state-container hidden">
-                    <div class="state-content">
-                        <div class="state-icon-bg">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                            </svg>
-                        </div>
-                        <h3>Nenhum texto selecionado</h3>
-                        <p>Selecione um texto na lista para começar a leitura, ou refine sua busca.</p>
+                    <div class="state-icon-bg">
+                        <span class="material-symbols-outlined" style="font-size: 2rem;">auto_stories</span>
                     </div>
+                    <h3>Nenhum texto selecionado</h3>
+                    <p>Selecione um texto na lista para começar a leitura, ou refine sua busca.</p>
                 </div>
 
                 <div id="error-state" class="state-container hidden">
                     <div class="state-content error-content">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
+                        <span class="material-symbols-outlined" style="font-size: 3rem; color: var(--error);">error</span>
                         <h3>Ops! Algo deu errado</h3>
                         <p id="error-message">Não foi possível carregar os dados.</p>
                         <button id="retry-button" class="btn btn-secondary mt-4">Tentar Novamente</button>
                     </div>
                 </div>
 
-                <div id="content-display" class="hidden">
+                <div id="content-display" class="hidden w-full">
                     <div class="show-text-list-container">
                         <button id="show-text-list" class="btn btn-ghost" aria-label="Ver lista">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
+                            <span class="material-symbols-outlined" style="margin-right: 8px;">menu</span>
                             Ver lista de textos
                         </button>
                     </div>
                     
-                    <header class="content-header">
-                        <h1 id="text-title"></h1>
+                    <header class="content-header w-full">
                         <time id="text-date" datetime=""></time>
+                        <h1 id="text-title"></h1>
                     </header>
-                    <article id="text-body" class="prose">
-                        <!-- Conteúdo do texto selecionado -->
+                    <article id="text-body" class="prose w-full">
+                        <!-- Conteúdo selecionado -->
                     </article>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- TELA DE LOGIN -->
+    <!-- MODAL DE LOGIN -->
     <dialog id="login-modal" class="modal">
         <div class="modal-overlay" data-close="login-modal"></div>
         <div class="modal-container">
-            <button class="close-modal-button" data-close="login-modal" aria-label="Fechar">&times;</button>
+            <button class="close-modal-button" data-close="login-modal" aria-label="Fechar">
+                <span class="material-symbols-outlined">close</span>
+            </button>
             <form id="login-form">
                 <div class="modal-header">
-                    <h2>Acesso Restrito</h2>
-                    <p>Faça login para gerenciar a biblioteca.</p>
+                    <h2>Enter Sanctuary</h2>
+                    <p>Authenticate to access your reliquary.</p>
                 </div>
-                <div class="form-group">
+                <div class="form-group flex-col" style="margin-top: 1rem;">
                     <label for="email">E-mail</label>
-                    <input type="email" id="email" required placeholder="seu@email.com">
+                    <input type="email" id="email" required placeholder="">
                 </div>
-                <div class="form-group">
+                <div class="form-group flex-col">
                     <label for="password">Senha</label>
-                    <input type="password" id="password" required placeholder="••••••••">
+                    <input type="password" id="password" required placeholder="">
                 </div>
-                <button type="submit" class="btn btn-primary w-full">Entrar</button>
+                <div class="form-actions" style="justify-content: center; border: none;">
+                    <button type="submit" class="btn btn-primary w-full" style="padding: 1rem 0;">Entrar</button>
+                </div>
                 <div id="login-error" class="hidden error-text"></div>
             </form>
         </div>
     </dialog>
 
-    <!-- TELA DE NOVO TEXTO -->
+    <!-- MODAL NOVO TEXTO -->
     <dialog id="new-text-modal" class="modal">
         <div class="modal-overlay" data-close="new-text-modal"></div>
         <div class="modal-container modal-large">
-            <button class="close-modal-button" data-close="new-text-modal" aria-label="Fechar">&times;</button>
+            <button class="close-modal-button" data-close="new-text-modal" aria-label="Fechar">
+                <span class="material-symbols-outlined">close</span>
+            </button>
             <form id="new-text-form">
                 <div class="modal-header">
                     <h2>Novo Texto</h2>
@@ -193,23 +176,28 @@
                 <div class="form-row">
                     <div class="form-group flex-1">
                         <label for="new-title">Título</label>
-                        <input type="text" id="new-title" required placeholder="Digite o título da obra">
+                        <input type="text" id="new-title" required placeholder="">
                     </div>
-                    <div class="form-group flex-1">
-                        <label for="new-collection">Coleção</label>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group flex-1" style="margin-bottom: 1rem;">
+                        <label for="new-collection" style="position: relative; top: 0; margin-bottom: 0.5rem; display: block;">Coleção</label>
                         <div class="select-wrapper">
-                            <select id="new-collection" required></select>
+                            <select id="new-collection" required style="border-bottom: 1px solid rgba(72,72,72,0.2)"></select>
                         </div>
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="new-content">Conteúdo</label>
-                    <textarea id="new-content" rows="12" required placeholder="Escreva o conteúdo (tags <strong> e <em> são permitidas)"></textarea>
+                <div class="form-group" style="margin-top: 1rem;">
+                    <textarea id="new-content" required placeholder="Begin drafting..."></textarea>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn btn-ghost" data-close="new-text-modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Publicar</button>
+                    <button type="button" class="btn btn-ghost" data-close="new-text-modal">Discard</button>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="material-symbols-outlined" style="font-size: 16px; margin-right: 4px;">save</span>
+                        Save Draft
+                    </button>
                 </div>
             </form>
         </div>
