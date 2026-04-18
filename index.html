@@ -194,10 +194,44 @@
     <button id="back-to-reading" style="display:none;"></button>
     <button id="show-text-list" style="display:none;"></button>
     
-    <dialog id="new-text-modal" style="display:none;">
-        <form id="new-text-form">
-            <select id="new-collection"></select>
-        </form>
+    <!-- NEW TEXT MODAL -->
+    <dialog id="new-text-modal" class="modal">
+        <div class="modal-overlay" data-close="new-text-modal" style="position:absolute; inset:0;"></div>
+        <div class="modal-container" style="max-width: 48rem;"> <!-- wider for text editing -->
+            <div class="modal-top-accent"></div>
+            <button class="close-modal-button" data-close="new-text-modal" aria-label="Fechar">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <h2 class="font-headline" style="font-size: 1.875rem; color: var(--on-surface); font-weight: 300; margin-bottom: 0.5rem;">Draft New Text</h2>
+            <p class="font-body" style="font-size: 0.875rem; color: var(--on-surface-variant); margin-bottom: 2rem;">Inscribe your thoughts into the reliquary.</p>
+            
+            <form id="new-text-form" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <!-- Select Collection -->
+                <div class="form-group" style="margin-bottom: 0;">
+                    <select id="new-collection" class="floating-input" style="color: var(--on-surface); appearance: none;" required>
+                        <!-- Injected by JS -->
+                    </select>
+                    <label for="new-collection" class="floating-label" style="top: -0.875rem; font-size: 0.75rem; color: var(--primary);">Collection</label>
+                </div>
+                
+                <!-- Title -->
+                <div class="form-group" style="margin-bottom: 0;">
+                    <input type="text" id="new-title" class="floating-input" placeholder=" " required autocomplete="off">
+                    <label for="new-title" class="floating-label">Title</label>
+                </div>
+                
+                <!-- Content Area -->
+                <div class="form-group" style="margin-bottom: 0;">
+                    <textarea id="new-content" class="floating-input" placeholder=" " rows="8" required style="resize: none; padding-top: 1rem;"></textarea>
+                    <label for="new-content" class="floating-label">Body Text (Markdown/Raw)</label>
+                </div>
+                
+                <div class="form-actions" style="margin-top: 1rem; display: flex; justify-content: flex-end; gap: 1rem;">
+                    <button type="button" class="btn-ghost" data-close="new-text-modal">Cancel</button>
+                    <button type="submit" class="btn-primary" style="width: auto; padding-left: 2rem; padding-right: 2rem;">Publish</button>
+                </div>
+            </form>
+        </div>
     </dialog>
 </body>
 </html>
