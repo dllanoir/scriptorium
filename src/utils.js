@@ -48,7 +48,11 @@ export const Utils = {
 };
 
 export const Icons = {
-    login: '<span class="material-symbols-outlined icon-18">login</span>',
-    logout: '<span class="material-symbols-outlined icon-18">logout</span>',
-    collection: '<span class="material-symbols-outlined icon-16">folder</span>'
+    login: '<span class="material-symbols-outlined text-[18px]">login</span>',
+    logout: '<span class="material-symbols-outlined text-[18px]">logout</span>',
+    collection: '<span class="material-symbols-outlined text-[18px]">folder</span>',
+    menu_book: '<span class="material-symbols-outlined text-[18px]">menu_book</span>',
+    auto_stories: '<span class="material-symbols-outlined text-[18px]">auto_stories</span>',
+    history: '<span class="material-symbols-outlined text-[18px]">history</span>',
+    edit_note: '<span class="material-symbols-outlined text-[18px]">edit_note</span>'
 };

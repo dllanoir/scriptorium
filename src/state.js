@@ -5,5 +5,6 @@ export const State = {
     activeTextId: null,
     user: null,
     isLoadingTexts: false,
-    isLoadingCollections: false
+    isLoadingCollections: false,
+    pendingDeleteCollectionId: null
 };
