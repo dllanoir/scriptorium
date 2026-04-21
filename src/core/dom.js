@@ -1,11 +1,15 @@
-// Os elementos só estarão disponíveis estaticamente se importados após o DOMContentLoaded, 
-// ou encapsulados em um get getter (ou chamados de app.js na injeção).
-// A abordagem mais limpa: O App.js chama a inicialização do DOM que popula esse cache.
-
+/**
+ * @namespace DOM
+ * @description Centralized DOM element cache.
+ */
 export const DOM = {};
 
+/**
+ * Initializes the DOM element cache.
+ */
 export function initDOM() {
     Object.assign(DOM, {
+        app: document.getElementById('app'),
         collectionsList: document.getElementById('collections-list'),
         textListContainer: document.getElementById('text-list-container'),
         searchBox: document.getElementById('search-box'),
@@ -28,8 +32,12 @@ export function initDOM() {
         userEmail: document.getElementById('user-email'),
         
         loginModal: document.getElementById('login-modal'),
+        authGate: document.getElementById('auth-gate'),
         loginForm: document.getElementById('login-form'),
-        loginError: document.getElementById('login-error'),
+        landingLoginForm: document.getElementById('landing-login-form'),
+        landingEmail: document.getElementById('landing-email'),
+        landingPassword: document.getElementById('landing-password'),
+        landingLoginError: document.getElementById('landing-login-error'),
         
         newTextModal: document.getElementById('new-text-modal'),
         newTextForm: document.getElementById('new-text-form'),
@@ -61,6 +69,7 @@ export function initDOM() {
         confirmDeleteBtn: document.getElementById('confirm-delete-button'),
         editIdInput: document.getElementById('edit-text-id'),
         saveTextLabel: document.getElementById('save-text-label'),
+        charCounter: document.getElementById('char-counter'),
         
         // Collection CRUD
         addCollectionBtn: document.getElementById('add-collection-button'),

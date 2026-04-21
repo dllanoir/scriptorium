@@ -1,6 +1,10 @@
 import { DOM } from './dom.js';
-import { Api } from './api.js';
+import { Api } from '../api/index.js';
 
+/**
+ * @constant ZEN_COLORS
+ * @description Default theme tokens.
+ */
 export const ZEN_COLORS = {
     "surface": "#0e0e0e",
     "on-surface": "#e7e5e5",
@@ -12,6 +16,10 @@ export const ZEN_COLORS = {
     "error": "#ee7d77"
 };
 
+/**
+ * @namespace Settings
+ * @description Manages user preferences and theme application.
+ */
 export const Settings = {
     current: {
         theme: 'zen',
@@ -19,25 +27,29 @@ export const Settings = {
         fontSize: 'medium'
     },
 
+    /**
+     * Initializes settings from LocalStorage and Cloud metadata.
+     */
     init: async () => {
-        // Load from local storage for instant render (FOUC combat)
         const local = localStorage.getItem('scriptorium_settings');
         if (local) {
             Settings.current = { ...Settings.current, ...JSON.parse(local) };
             Settings.apply();
         }
 
-        // Try getting from Supabase user metadata
         const user = await Api.getUser();
         if (user && user.user_metadata && user.user_metadata.settings) {
             Settings.current = { ...Settings.current, ...user.user_metadata.settings };
             Settings.apply();
-            Settings.saveLocal(); // sync local with cloud
+            Settings.saveLocal();
         }
 
         Settings.bindUI();
     },
 
+    /**
+     * Saves settings to Supabase user metadata.
+     */
     saveCloud: async () => {
         const user = await Api.getUser();
         if (user) {
@@ -45,10 +57,18 @@ export const Settings = {
         }
     },
 
+    /**
+     * Saves settings to Browser LocalStorage.
+     */
     saveLocal: () => {
         localStorage.setItem('scriptorium_settings', JSON.stringify(Settings.current));
     },
 
+    /**
+     * Updates a specific setting and applies it.
+     * @param {string} key 
+     * @param {any} value 
+     */
     update: async (key, value) => {
         Settings.current[key] = value;
         Settings.apply();
@@ -56,49 +76,44 @@ export const Settings = {
         await Settings.saveCloud();
     },
 
+    /**
+     * Applies the current settings to the DOM.
+     */
     apply: () => {
         const root = document.documentElement;
         
-        // Enforce Default Theme variables
         Object.entries(ZEN_COLORS).forEach(([k, v]) => {
             root.style.setProperty(`--${k}`, v);
         });
 
-        // Font Family (Global)
         const fontMap = {
             'sans': { headline: 'Manrope, sans-serif', body: 'Manrope, sans-serif', label: 'Manrope, sans-serif' },
             'mono': { headline: 'monospace', body: 'monospace', label: 'monospace' },
-            'serif':{ headline: 'Newsreader, serif', body: 'Manrope, sans-serif', label: 'Manrope, sans-serif' }
+            'serif': { headline: 'Newsreader, serif', body: 'Manrope, sans-serif', label: 'Manrope, sans-serif' }
         };
         
         const fns = fontMap[Settings.current.fontFamily] || fontMap['serif'];
-        tailwind.config.theme.extend.fontFamily = { ...tailwind.config.theme.extend.fontFamily, ...fns };
         
-        document.body.style.fontFamily = fns.body;
-        // Elements specifically using font-headline or font-label will pick up from CDN class, but wait, tailwind cdn doesn't react.
-        // Instead, we just assign native CSS variables for Tailwind to read:
-        // tailwind.config already has font-families in index.html, let's just make it read CSS variables:
         root.style.setProperty('--font-headline', fns.headline);
         root.style.setProperty('--font-body', fns.body);
         root.style.setProperty('--font-label', fns.label);
                                       
-        // Font Size (Global root em scale)
         const baseSize = Settings.current.fontSize === 'small' ? '14px' :
                          Settings.current.fontSize === 'large' ? '18px' : '16px';
         root.style.fontSize = baseSize;
     },
 
+    /**
+     * Binds UI events for the settings modal.
+     */
     bindUI: () => {
-        const fontSelect = document.getElementById('setting-font');
-        const sizeSelect = document.getElementById('setting-size');
-
-        if (fontSelect) {
-            fontSelect.value = Settings.current.fontFamily;
-            fontSelect.addEventListener('change', (e) => Settings.update('fontFamily', e.target.value));
+        if (DOM.settingFont) {
+            DOM.settingFont.value = Settings.current.fontFamily;
+            DOM.settingFont.addEventListener('change', (e) => Settings.update('fontFamily', e.target.value));
         }
-        if (sizeSelect) {
-            sizeSelect.value = Settings.current.fontSize;
-            sizeSelect.addEventListener('change', (e) => Settings.update('fontSize', e.target.value));
+        if (DOM.settingSize) {
+            DOM.settingSize.value = Settings.current.fontSize;
+            DOM.settingSize.addEventListener('change', (e) => Settings.update('fontSize', e.target.value));
         }
     }
 };

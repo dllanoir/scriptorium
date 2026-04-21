@@ -1,12 +1,22 @@
-import { Api } from './api.js';
+import { Api } from '../api/index.js';
 import { State } from './state.js';
-import { UI } from './ui.js';
+import { UI } from '../components/index.js';
 import { DOM } from './dom.js';
-import { Utils } from './utils.js';
+import { Utils } from '../utils/index.js';
 
+/**
+ * @namespace Controllers
+ * @description Coordinate logic between the UI, API and State.
+ */
 export const Controllers = {
+    /**
+     * Loads texts and collections from Supabase.
+     */
     loadData: async () => {
+        if (State.isLoadingData) return;
+        
         try {
+            State.isLoadingData = true;
             State.isLoadingCollections = true;
             State.isLoadingTexts = true;
             
@@ -18,7 +28,7 @@ export const Controllers = {
             State.collections = collections;
             State.texts = texts;
 
-            if (texts.length > 0) {
+            if (texts.length > 0 && !State.activeTextId) {
                 State.activeTextId = texts[0].id;
             }
 
@@ -27,14 +37,18 @@ export const Controllers = {
             UI.renderTextContent();
 
         } catch (error) {
-            console.error("Erro ao carregar os dados", error);
+            console.error("Erro ao carregar os dados:", error);
             UI.showError("Falha na comunicação com o servidor.");
         } finally {
             State.isLoadingCollections = false;
             State.isLoadingTexts = false;
+            State.isLoadingData = false;
         }
     },
 
+    /**
+     * @param {string|number} collectionId 
+     */
     handleCollectionSelect: (collectionId) => {
         State.activeCollectionId = collectionId;
         const filteredTexts = collectionId === 1 
@@ -48,30 +62,43 @@ export const Controllers = {
         UI.renderTextContent();
     },
 
+    /**
+     * @param {string|number} textId 
+     */
     handleTextSelect: (textId) => {
         State.activeTextId = textId;
         UI.renderTextList(DOM.searchBox.value);
         UI.renderTextContent();
     },
 
+    /**
+     * @param {Event} e 
+     */
     handleLoginSubmit: async (e) => {
         e.preventDefault();
         const email = e.target.email.value;
         const password = e.target.password.value;
-        DOM.loginError.classList.add('hidden');
+        
+        const errorDisplay = DOM.landingLoginError || DOM.loginError;
+        if (errorDisplay) errorDisplay.classList.add('hidden');
 
         const { error } = await Api.login(email, password);
 
         if (error) {
-            DOM.loginError.textContent = 'Credenciais inválidas.';
-            DOM.loginError.classList.remove('hidden');
+            if (errorDisplay) {
+                errorDisplay.textContent = 'Credenciais inválidas ou erro de conexão.';
+                errorDisplay.classList.remove('hidden');
+            }
         } else {
-            UI.toggleModal(DOM.loginModal, false);
             e.target.reset();
             Utils.toast('Acesso autorizado.', 'success');
+            // Transition is handled by Api.onAuthStateChange -> UI.updateAuthUI
         }
     },
 
+    /**
+     * @param {Event} e 
+     */
     handleNewTextSubmit: async (e) => {
         e.preventDefault();
         if (!State.user) {
@@ -79,13 +106,15 @@ export const Controllers = {
             return;
         }
 
-        const title = e.target['new-title'].value;
+        const title = e.target['new-title'].value.trim();
         const collectionId = parseInt(e.target['new-collection'].value, 10);
-        const rawContent = e.target['new-content'].value;
+        const content = e.target['new-content'].value;
         const editId = DOM.editIdInput ? DOM.editIdInput.value : '';
         
-        const paragraphs = rawContent.split('\n\n').filter(p => p.trim() !== '');
-        const content = paragraphs.map(p => p.replace(/\n/g, '<br>'));
+        if (content.length > 5000) {
+            Utils.toast('O texto excede o limite de 5000 caracteres.', 'error');
+            return;
+        }
 
         try {
             if (editId) {
@@ -97,6 +126,7 @@ export const Controllers = {
             }
             UI.toggleModal(DOM.newTextModal, false);
             e.target.reset();
+            if (DOM.charCounter) DOM.charCounter.textContent = '0 / 5000';
             if (DOM.editIdInput) DOM.editIdInput.value = '';
             await Controllers.loadData();
         } catch (err) {
@@ -112,18 +142,19 @@ export const Controllers = {
 
         UI.populateDropdown();
         
-        // Reverse paragraphs mapping for textarea
         let rawContent = '';
         if (Array.isArray(textToEdit.content)) {
+            // Legacy support for array format
             rawContent = textToEdit.content.map(p => p.replace(/<br>/g, '\n')).join('\n\n');
         } else {
-            rawContent = textToEdit.content;
+            rawContent = textToEdit.content || '';
         }
 
         DOM.newTextForm['new-title'].value = textToEdit.title;
         DOM.newTextForm['new-collection'].value = textToEdit.collectionId;
         DOM.newTextForm['new-content'].value = rawContent;
         
+        if (DOM.charCounter) DOM.charCounter.textContent = `${rawContent.length} / 5000`;
         if (DOM.editIdInput) DOM.editIdInput.value = textToEdit.id;
         if (DOM.saveTextLabel) DOM.saveTextLabel.textContent = 'Update Text';
         
@@ -137,10 +168,12 @@ export const Controllers = {
             await Api.deleteText(State.activeTextId);
             Utils.toast('Texto excluído permanentemente.', 'success');
             UI.toggleModal(DOM.deleteModal, false);
+            State.activeTextId = null;
             await Controllers.loadData();
         } catch (err) {
             console.error("Falha ao excluir:", err);
             Utils.toast('Falha ao excluir.', 'error');
+        } finally {
             UI.toggleModal(DOM.deleteModal, false);
         }
     },
@@ -179,6 +212,9 @@ export const Controllers = {
         }
     },
 
+    /**
+     * @param {string|number} collectionId 
+     */
     handleCollectionEditClick: (collectionId) => {
         const col = State.collections.find(c => c.id === parseInt(collectionId, 10));
         if (!col) return;
@@ -189,9 +225,7 @@ export const Controllers = {
         DOM.collectionModalTitle.textContent = 'Editar Coleção';
         DOM.collectionSaveLabel.textContent = 'Salvar Alterações';
         
-        // Update icon picker visual state
         Controllers._highlightSelectedIcon(col.icon || 'folder');
-
         UI.toggleModal(DOM.collectionModal, true);
     },
 
@@ -199,11 +233,7 @@ export const Controllers = {
         if (!State.pendingDeleteCollectionId || !State.user) return;
 
         try {
-            // Delete all texts belonging to this collection first
-            const textsInCollection = State.texts.filter(t => parseInt(t.collectionId, 10) === parseInt(State.pendingDeleteCollectionId, 10));
-            for (const text of textsInCollection) {
-                await Api.deleteText(text.id);
-            }
+            // REDUNDANT LOOP REMOVED: Supabase ON DELETE CASCADE handles this now.
             await Api.deleteCollection(State.pendingDeleteCollectionId);
             Utils.toast('Coleção e seus textos foram excluídos.', 'success');
             UI.toggleModal(DOM.deleteCollectionModal, false);
@@ -217,14 +247,18 @@ export const Controllers = {
         }
     },
 
+    /**
+     * @private
+     * @param {string} iconName 
+     */
     _highlightSelectedIcon: (iconName) => {
         if (!DOM.iconPicker) return;
         DOM.iconPicker.querySelectorAll('.icon-pick').forEach(btn => {
             if (btn.dataset.icon === iconName) {
-                btn.classList.add('border-primary', 'text-primary', 'bg-primary/10');
-                btn.classList.remove('border-outline-variant/30', 'text-on-surface-variant');
+                btn.classList.add('bg-primary', 'text-on-primary', 'border-primary', 'scale-110', 'shadow-lg');
+                btn.classList.remove('bg-primary/10', 'text-on-surface-variant', 'border-outline-variant/30', 'text-primary');
             } else {
-                btn.classList.remove('border-primary', 'text-primary', 'bg-primary/10');
+                btn.classList.remove('bg-primary', 'text-on-primary', 'border-primary', 'scale-110', 'shadow-lg');
                 btn.classList.add('border-outline-variant/30', 'text-on-surface-variant');
             }
         });
