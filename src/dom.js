@@ -47,6 +47,32 @@ export function initDOM() {
         settingsBtn: document.getElementById('settings-button'),
         helpBtn: document.getElementById('help-button'),
         settingsModal: document.getElementById('settings-modal'),
-        helpModal: document.getElementById('help-modal')
+        helpModal: document.getElementById('help-modal'),
+        
+        // Settings Selectors
+        settingFont: document.getElementById('setting-font'),
+        settingSize: document.getElementById('setting-size'),
+        
+        // Edit and Delete
+        textActions: document.getElementById('text-actions'),
+        editBtn: document.getElementById('edit-text-button'),
+        deleteBtn: document.getElementById('delete-text-button'),
+        deleteModal: document.getElementById('delete-modal'),
+        confirmDeleteBtn: document.getElementById('confirm-delete-button'),
+        editIdInput: document.getElementById('edit-text-id'),
+        saveTextLabel: document.getElementById('save-text-label'),
+        
+        // Collection CRUD
+        addCollectionBtn: document.getElementById('add-collection-button'),
+        collectionModal: document.getElementById('collection-modal'),
+        collectionModalTitle: document.getElementById('collection-modal-title'),
+        collectionForm: document.getElementById('collection-form'),
+        collectionNameInput: document.getElementById('collection-name'),
+        collectionIconInput: document.getElementById('collection-icon'),
+        editCollectionIdInput: document.getElementById('edit-collection-id'),
+        collectionSaveLabel: document.getElementById('collection-save-label'),
+        iconPicker: document.getElementById('icon-picker'),
+        deleteCollectionModal: document.getElementById('delete-collection-modal'),
+        confirmDeleteCollectionBtn: document.getElementById('confirm-delete-collection-button')
     });
 }

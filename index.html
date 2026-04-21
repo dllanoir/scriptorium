@@ -6,232 +6,416 @@
     <title>Scriptorium - The Digital Sanctuary</title>
     
     <!-- CSP Meta Tag for security -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://*.supabase.co; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://*.supabase.co https://cdn.jsdelivr.net;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://*.supabase.co; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://*.supabase.co https://cdn.jsdelivr.net;">
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Manrope:wght@200..800&display=swap" rel="stylesheet"/>
     
+    <!-- Toastify -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-
-    <!-- CSS Modules -->
-    <link rel="stylesheet" href="assets/css/variables.css">
-    <link rel="stylesheet" href="assets/css/base.css">
-    <link rel="stylesheet" href="assets/css/components.css">
-    <link rel="stylesheet" href="assets/css/layout.css">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                      "on-tertiary-fixed": "#2c4655",
+                      "outline-variant": "var(--outline-variant, #484848)",
+                      "surface-dim": "#0e0e0e",
+                      "on-tertiary-container": "#3e5868",
+                      "surface-container-lowest": "#000000",
+                      "on-tertiary": "#466170",
+                      "tertiary-fixed": "#d0ecff",
+                      "primary-fixed-dim": "#d4d4d4",
+                      "on-secondary": "#202020",
+                      "on-error-container": "#ff9993",
+                      "inverse-surface": "#fcf9f8",
+                      "on-background": "#e7e5e5",
+                      "on-surface": "var(--on-surface, #e7e5e5)",
+                      "primary-container": "#454747",
+                      "primary-dim": "#b8b9b9",
+                      "surface-bright": "#2b2c2c",
+                      "secondary-fixed-dim": "#d6d4d3",
+                      "inverse-primary": "#5e5f5f",
+                      "secondary-fixed": "#e4e2e1",
+                      "tertiary-container": "#d0ecff",
+                      "background": "#0e0e0e",
+                      "on-primary": "var(--on-primary, #3f4041)",
+                      "outline": "#767575",
+                      "surface-container-low": "var(--surface-container-low, #131313)",
+                      "surface-tint": "#c6c6c6",
+                      "on-primary-fixed": "#3e4040",
+                      "surface-container-highest": "#252626",
+                      "secondary": "#9f9d9d",
+                      "primary": "var(--primary, #c6c6c6)",
+                      "error": "var(--error, #ee7d77)",
+                      "error-container": "#7f2927",
+                      "tertiary-dim": "#c2def0",
+                      "surface-variant": "#252626",
+                      "primary-fixed": "#e2e2e2",
+                      "secondary-container": "#3b3b3b",
+                      "error-dim": "#bb5551",
+                      "on-secondary-fixed": "#3f3f3f",
+                      "on-error": "#490106",
+                      "on-surface-variant": "#acabaa",
+                      "on-secondary-fixed-variant": "#5c5b5b",
+                      "inverse-on-surface": "#565555",
+                      "tertiary": "#eff8ff",
+                      "surface": "var(--surface, #0e0e0e)",
+                      "on-primary-fixed-variant": "#5a5c5c",
+                      "on-primary-container": "#d0d0d0",
+                      "tertiary-fixed-dim": "#c2def0",
+                      "on-secondary-container": "#c1bfbe",
+                      "secondary-dim": "#9f9d9d",
+                      "on-tertiary-fixed-variant": "#486272",
+                      "surface-container": "#191a1a",
+                      "surface-container-high": "var(--surface-container-high, #1f2020)"
+              },
+              borderRadius: {
+                      DEFAULT: "0.125rem",
+                      lg: "0.25rem",
+                      xl: "0.5rem",
+                      full: "0.75rem"
+              },
+              fontFamily: {
+                      headline: ["var(--font-headline, Newsreader)", "serif"],
+                      body: ["var(--font-body, Manrope)", "sans-serif"],
+                      label: ["var(--font-label, Manrope)", "sans-serif"]
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
 </head>
-<body class="bg-surface text-on-surface font-body antialiased hide-scrollbar">
+<body class="bg-gradient-to-br from-[#151718] via-surface to-[#0a0a0a] text-on-surface font-body antialiased overflow-hidden selection:bg-primary selection:text-on-primary">
 
-    <!-- TopNavBar -->
-    <nav class="stitch-nav">
-        <div class="stitch-nav-inner">
-            <div class="font-headline italic text-on-surface" style="font-size: 1.5rem; letter-spacing: 0.1em;">Scriptorium</div>
-            <div class="hidden md:flex space-x-8" style="gap: 2rem;">
-                <a class="text-on-surface font-headline tracking-tight" style="font-size: 1.125rem; border-bottom: 2px solid var(--on-surface); padding-bottom: 0.25rem; text-decoration: none;" href="#">Essays</a>
-                <a class="text-on-surface-variant font-headline tracking-tight" style="font-size: 1.125rem; text-decoration: none;" href="#">Library</a>
-                <a class="text-on-surface-variant font-headline tracking-tight" style="font-size: 1.125rem; text-decoration: none;" href="#">Archives</a>
+    <!-- TopNavBar Wrapper to align with 1600px container -->
+    <nav class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[1600px] px-8 pt-4 z-50">
+        <div class="rounded-2xl bg-stone-900/70 backdrop-blur-2xl shadow-2xl border border-white/5 flex justify-between items-center px-8 py-3 transition-all">
+            <div class="font-headline italic text-2xl tracking-widest text-stone-100 drop-shadow-md">Scriptorium</div>
+            <div class="hidden md:flex space-x-8">
+                <a class="text-stone-100 font-headline tracking-tight text-lg hover:-translate-y-0.5 transition-transform drop-shadow-sm" style="text-shadow: 0 0 10px rgba(255,255,255,0.2)" href="#">Essays</a>
+                <a class="text-stone-500 hover:text-stone-200 transition-all duration-500 font-headline tracking-tight text-lg hover:-translate-y-0.5" href="#">Library</a>
+                <a class="text-stone-500 hover:text-stone-200 transition-all duration-500 font-headline tracking-tight text-lg hover:-translate-y-0.5" href="#">Archives</a>
             </div>
-            <div class="flex items-center" style="gap: 1.5rem;">
-                <button id="new-text-button" class="nav-btn">
-                    <span class="material-symbols-outlined icon-18" style="font-variation-settings: 'FILL' 0;">edit</span>
+            <div class="flex items-center space-x-6">
+                <button class="bg-white/5 hover:bg-white/10 px-4 py-2 rounded-xl text-stone-200 hover:text-white transition-all duration-300 active:scale-95 font-label text-sm uppercase tracking-widest flex items-center space-x-2 border border-white/5 hover:border-white/20 shadow-lg" id="new-text-button" style="display: none;">
+                    <span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
                     <span>New Text</span>
                 </button>
-                <button id="auth-button" class="nav-btn">
-                    Sign In
+                <div id="user-info" class="hidden items-center space-x-3">
+                    <span id="user-email" class="text-xs font-label uppercase tracking-widest text-stone-400"></span>
+                </div>
+                <button class="bg-transparent hover:bg-white/5 px-4 py-2 rounded-xl text-stone-300 hover:text-white transition-all duration-300 active:scale-95 font-label text-sm uppercase tracking-widest flex items-center space-x-2" id="auth-button">
+                    <span class="material-symbols-outlined text-[18px]">login</span>
+                    <span>Sign In</span>
                 </button>
             </div>
         </div>
     </nav>
 
     <!-- App Container -->
-    <div id="app" class="stitch-app-container">
-        
-        <!-- SIDEBAR -->
-        <aside class="stitch-sidebar">
-            <div class="sidebar-search-box">
-                <input type="text" id="search-box" class="sidebar-search-input" placeholder="Search...">
-                <span class="material-symbols-outlined sidebar-search-icon" data-icon="search">search</span>
+    <div id="app" class="flex h-screen w-full pt-28 pb-6 px-8 gap-6 max-w-[1600px] mx-auto">
+        <!-- SideNavBar -->
+        <aside class="w-72 border border-white/5 bg-stone-900/30 backdrop-blur-xl rounded-2xl shadow-xl hidden lg:flex flex-col h-full p-6 gap-6 overflow-y-auto">
+            <div class="relative group mt-2">
+                <input id="search-box" class="w-full bg-black/20 rounded-xl border border-white/5 focus:border-primary/50 focus:bg-black/40 text-on-surface font-body text-sm py-2.5 pl-10 focus:ring-0 transition-all duration-300 placeholder-on-surface-variant/50" placeholder="Search..." type="text"/>
+                <span class="material-symbols-outlined absolute left-3 top-3 text-on-surface-variant/50 group-focus-within:text-primary transition-colors text-[18px]" data-icon="search">search</span>
             </div>
             
-            <div class="flex-col" style="gap: 0.25rem;">
-                <div class="font-headline" style="font-size: 1.25rem; color: #e5e7eb; margin-bottom: 0.25rem;">Collections</div>
-                <div class="font-label" style="color: #6b7280; font-size: 0.75rem; letter-spacing: 0.1em; margin-bottom: 1.5rem; text-transform: uppercase;">Personal Reliquary</div>
+            <div class="flex flex-col space-y-1">
+                <div class="flex items-center justify-between">
+                    <div class="font-headline text-xl text-on-surface mb-1">Collections</div>
+                    <button id="add-collection-button" class="text-on-surface-variant hover:text-primary transition-colors p-1 rounded-lg hover:bg-surface-container-highest/50 active:scale-90" title="New Collection" style="display:none;">
+                        <span class="material-symbols-outlined text-[18px]">add</span>
+                    </button>
+                </div>
+                <div class="text-on-surface-variant/80 text-xs uppercase tracking-widest mb-6 font-label">Personal Reliquary</div>
                 
-                <nav id="collections-list" style="display: flex; flex-direction: column; gap: 0.5rem;">
-                    <!-- JS Collections -->
+                <nav class="flex flex-col space-y-2" id="collections-list">
+                    <!-- JS Injected Collections -->
                 </nav>
             </div>
-            
-            <div style="margin-top: auto; padding-top: 2rem; border-top: 1px solid rgba(72,72,72,0.1); display: flex; flex-direction: column; gap: 0.5rem;">
-                <a class="collection-link" id="settings-button">
-                    <span class="material-symbols-outlined icon-16" data-icon="settings">settings</span>
+
+            <div class="mt-auto flex flex-col space-y-2 pt-8 border-t border-outline-variant/10">
+                <a id="settings-button" class="text-stone-500 hover:text-stone-200 transition-all duration-300 cursor-pointer font-['Manrope'] uppercase tracking-[0.2em] text-[10px] flex items-center p-2 space-x-4">
+                    <span class="material-symbols-outlined text-[16px]" data-icon="settings">settings</span>
                     <span>Settings</span>
                 </a>
-                <a class="collection-link" id="help-button">
-                    <span class="material-symbols-outlined icon-16" data-icon="help_outline">help_outline</span>
+                <a id="help-button" class="text-stone-500 hover:text-stone-200 transition-all duration-300 cursor-pointer font-['Manrope'] uppercase tracking-[0.2em] text-[10px] flex items-center p-2 space-x-4">
+                    <span class="material-symbols-outlined text-[16px]" data-icon="help_outline">help_outline</span>
                     <span>Help</span>
                 </a>
             </div>
         </aside>
 
-        <!-- (HIDDEN MIDDLE PANEL, KEPT FOR JS COMPAT) -->
-        <section id="text-list-section" style="display: none;"></section>
-        <div id="text-list-container" style="display: none;"></div>
+        <!-- Middle Column: Text List Section -->
+        <section id="text-list-section" class="fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 w-80 md:w-72 h-full border border-outline-variant/30 bg-surface-container-low/70 dark:bg-stone-900/30 backdrop-blur-xl rounded-2xl shadow-xl z-40 transition-transform duration-300 flex flex-col pt-24 md:pt-0 pb-6 md:shadow-xl">
+            <div class="px-6 py-5 font-headline text-2xl text-on-surface border-b border-outline-variant/30 mb-2 sticky top-0 bg-transparent flex items-center justify-between">
+                <div class="flex items-center">
+                    <span class="md:hidden inline-block mr-2 text-primary cursor-pointer material-symbols-outlined align-middle" id="back-to-reading">arrow_back</span>
+                    Textos
+                </div>
+            </div>
+            <div id="text-list-container" class="flex-1 overflow-y-auto px-3 hide-scrollbar space-y-1">
+                <!-- JS Injected Texts -->
+            </div>
+        </section>
 
-        <!-- MAIN READING PANE -->
-        <main class="stitch-main hide-scrollbar" id="reading-pane">
+        <!-- Main Reading Pane -->
+        <main class="flex-1 bg-surface-container-lowest/80 dark:bg-[#101112] border border-outline-variant/30 dark:border-white/5 backdrop-blur-xl rounded-2xl overflow-y-auto flex flex-col items-center px-4 md:px-12 py-12 hide-scrollbar relative shadow-[inset_0_4px_40px_rgba(0,0,0,0.1)] dark:shadow-[inset_0_4px_40px_rgba(0,0,0,0.3)] shadow-xl" id="reading-pane">
             
             <!-- Default Empty State -->
-            <div id="empty-state" class="state-container">
-                <div class="state-icon-bg">
-                    <span class="material-symbols-outlined" style="font-size: 2rem;">auto_stories</span>
+            <div id="empty-state" class="flex flex-col items-center justify-center text-center space-y-4 max-w-md mx-auto mt-24">
+                <div class="w-16 h-16 rounded-full flex items-center justify-center bg-surface-container-high text-primary mb-4">
+                    <span class="material-symbols-outlined text-4xl">auto_stories</span>
                 </div>
-                <h3>Santuário Digital</h3>
-                <p>Selecione um texto para começar a leitura, ou adicione novos trechos.</p>
+                <h3 class="font-headline text-2xl text-on-surface mb-2">Santuário Digital</h3>
+                <p class="font-body text-base text-on-surface-variant">Selecione um texto para começar a leitura, ou adicione novos trechos.</p>
             </div>
 
             <!-- Error State -->
-            <div id="error-state" class="state-container hidden">
-                <div class="state-content error-content">
-                    <span class="material-symbols-outlined" style="font-size: 3rem; color: var(--error);">error</span>
-                    <h3>Ops! Algo deu errado</h3>
-                    <p id="error-message">Não foi possível carregar os dados.</p>
-                    <button id="retry-button" class="btn-secondary mt-4" style="padding: 0.5rem 1rem;">Tentar Novamente</button>
+            <div id="error-state" class="flex flex-col items-center justify-center text-center space-y-4 max-w-md mx-auto mt-24 hidden">
+                <div class="flex flex-col items-center">
+                    <span class="material-symbols-outlined text-5xl text-error mb-4">error</span>
+                    <h3 class="font-headline text-2xl text-on-surface mb-2">Ops! Algo deu errado</h3>
+                    <p id="error-message" class="font-body text-base text-on-surface-variant">Não foi possível carregar os dados.</p>
+                    <button id="retry-button" class="mt-8 bg-transparent text-primary border border-outline-variant/20 py-2 px-4 rounded-sm hover:border-primary transition-colors cursor-pointer font-label uppercase tracking-[0.1em] text-xs">Tentar Novamente</button>
                 </div>
             </div>
-            
-            <article class="stitch-article hidden" id="content-display">
-                <header class="article-header">
-                    <div class="article-accent-line"></div>
-                    <time id="text-date" datetime=""></time>
-                    <h1 id="text-title"></h1>
+
+            <article class="max-w-[680px] w-full mt-12 mb-32 hidden" id="content-display">
+                <header class="mb-16 text-left relative">
+                    <div class="absolute -left-12 top-2 h-full w-[2px] bg-gradient-to-b from-primary/40 to-transparent rounded-full hidden md:block"></div>
+                    <div class="flex items-center justify-between mb-4">
+                        <time class="font-label text-on-surface-variant text-sm tracking-[0.15em] uppercase block" id="text-date" datetime=""></time>
+                        <div id="text-actions" class="hidden space-x-2">
+                            <button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-lg hover:bg-surface-container-highest/50" id="edit-text-button" title="Edit Text">
+                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                            </button>
+                            <button class="text-on-surface-variant hover:text-error transition-colors p-2 rounded-lg hover:bg-error/10" id="delete-text-button" title="Delete Text">
+                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <h1 class="font-headline text-5xl md:text-6xl lg:text-[4rem] leading-tight tracking-tight text-on-surface font-light mb-8" id="text-title"></h1>
                 </header>
-                <div id="text-body" class="prose">
-                    <!-- JS injected content -->
+                <div class="font-body text-lg md:text-xl leading-relaxed text-on-surface/90 space-y-8 font-light" id="text-body">
+                    <!-- Text injected here -->
                 </div>
             </article>
         </main>
     </div>
 
-    <!-- TELA DE LOGIN -->
-    <dialog id="login-modal" class="modal">
-        <div class="modal-overlay" data-close="login-modal" style="position:absolute; inset:0;"></div>
-        <div class="modal-container">
-            <div class="modal-top-accent"></div>
-            <button class="close-modal-button" data-close="login-modal" aria-label="Fechar">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-            <h2 class="font-headline" style="font-size: 1.875rem; color: var(--on-surface); font-weight: 300; margin-bottom: 0.5rem;">Enter Sanctuary</h2>
-            <p class="font-body" style="font-size: 0.875rem; color: var(--on-surface-variant); margin-bottom: 2rem;">Authenticate to access your reliquary.</p>
-            
-            <form id="login-form">
-                <div class="form-group">
-                    <input type="email" id="email" class="floating-input" placeholder=" ">
-                    <label for="email" class="floating-label">Email Address</label>
+    <!-- Modals -->
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 bg-surface/60 dark:bg-black/60 backdrop-blur-2xl z-[100] hidden items-center justify-center p-4 transition-opacity duration-500 opacity-0">
+        <div class="bg-surface-container-high/90 dark:bg-surface-container-high/80 backdrop-blur-3xl border border-outline-variant/30 dark:border-white/10 w-full max-w-md p-10 rounded-3xl shadow-[0_0_80px_rgba(0,0,0,0.2)] dark:shadow-[0_0_80px_rgba(0,0,0,0.6)] relative overflow-hidden transition-all transform opacity-100 scale-100">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-surface-variant"></div>
+            <h2 class="font-headline text-3xl text-on-surface mb-2 font-light">Enter Sanctuary</h2>
+            <p class="font-body text-sm text-on-surface-variant mb-8">Authenticate to access your reliquary.</p>
+            <form id="login-form" class="space-y-5">
+                <div class="relative">
+                    <input class="w-full bg-surface-container-highest/50 border border-outline-variant/30 rounded-xl py-3 px-4 text-on-surface font-body focus:outline-none focus:border-primary/50 focus:bg-surface-container-highest transition-all placeholder-on-surface/50" id="email" placeholder="Email Address" type="email" required/>
                 </div>
-                <div class="form-group">
-                    <input type="password" id="password" class="floating-input" placeholder=" ">
-                    <label for="password" class="floating-label">Password</label>
+                <div class="relative">
+                    <input class="w-full bg-surface-container-highest/50 border border-outline-variant/30 rounded-xl py-3 px-4 text-on-surface font-body focus:outline-none focus:border-primary/50 focus:bg-surface-container-highest transition-all placeholder-on-surface/50" id="password" placeholder="Password" type="password" required/>
                 </div>
-                <button type="submit" class="btn-primary" style="margin-top: 2rem;">Sign In</button>
-                <div id="login-error" class="error-text hidden"></div>
+                <button type="submit" class="w-full bg-gradient-to-br from-primary to-on-surface/80 text-background font-label uppercase text-sm tracking-widest py-3 mt-8 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg font-bold">
+                    Sign In
+                </button>
+                <div id="login-error" class="hidden text-error font-body text-xs mt-4 text-center"></div>
             </form>
         </div>
-    </dialog>
+    </div>
 
-    <!-- SETTINGS MODAL -->
-    <dialog id="settings-modal" class="modal">
-        <div class="modal-overlay" data-close="settings-modal" style="position:absolute; inset:0;"></div>
-        <div class="modal-container">
-            <div class="modal-top-accent"></div>
-            <button class="close-modal-button" data-close="settings-modal" aria-label="Fechar">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-            <h2 class="font-headline" style="font-size: 1.875rem; color: var(--on-surface); font-weight: 300; margin-bottom: 0.5rem;">Settings</h2>
-            <p class="font-body" style="font-size: 0.875rem; color: var(--on-surface-variant); margin-bottom: 2rem;">System preferences and aesthetics.</p>
-            
-            <div class="prose">
-                <p>Configurações de layout, temas e perfil estarão em breve contidos neste modal adaptado ao estilo central do Santuário Digital.</p>
+    <!-- New/Edit Text Modal -->
+    <div id="new-text-modal" class="fixed inset-0 bg-surface/80 dark:bg-black/80 backdrop-blur-3xl z-[100] hidden items-center justify-center p-4 transition-opacity duration-500 opacity-0 px-8">
+        <form id="new-text-form" class="w-full max-w-4xl h-[85vh] bg-surface-container-high/90 dark:bg-surface-container-low/20 backdrop-blur-3xl border border-outline-variant/30 dark:border-white/5 rounded-[2rem] p-12 flex flex-col relative transition-all shadow-[0_0_80px_rgba(0,0,0,0.2)] dark:shadow-[0_0_120px_rgba(0,0,0,0.5)]">
+            <input type="hidden" id="edit-text-id" value="">
+            <div class="absolute top-8 right-10 flex items-center space-x-6">
+                <div class="relative">
+                    <select id="new-collection" class="bg-surface-container-highest/50 dark:bg-black/30 border border-outline-variant/30 dark:border-white/10 rounded-xl text-on-surface dark:text-stone-300 font-label text-xs uppercase tracking-widest py-3 px-4 focus:outline-none focus:border-primary/50 focus:bg-surface-container transition-all appearance-none cursor-pointer pr-10 shadow-lg form-select">
+                        <!-- Populated by JS -->
+                    </select>
+                    <span class="material-symbols-outlined absolute right-3 top-3 text-[18px] pointer-events-none text-on-surface-variant">arrow_drop_down</span>
+                </div>
+                
+                <button type="button" class="text-on-surface-variant hover:text-on-surface hover:bg-on-surface/10 rounded-xl px-4 py-2 transition-all flex items-center space-x-2 font-label text-sm uppercase tracking-widest close-modal-button" data-close="new-text-modal">
+                    <span>Discard</span>
+                    <span class="material-symbols-outlined" data-icon="close">close</span>
+                </button>
             </div>
             
-            <div class="form-actions" style="border-top: none; justify-content: flex-end;">
-                 <button type="button" class="btn-ghost" data-close="settings-modal">Fechar</button>
+            <input id="new-title" class="w-full bg-transparent border-none text-5xl font-headline text-on-surface placeholder-on-surface-variant/50 focus:ring-0 mb-10 p-0" placeholder="Title..." type="text" autocomplete="off" required/>
+            
+            <textarea id="new-content" class="w-full flex-1 bg-transparent border-none text-xl font-headline font-light text-on-surface/90 placeholder-on-surface-variant/50 focus:ring-0 resize-none p-0 leading-relaxed hide-scrollbar" placeholder="Begin drafting..." required></textarea>
+            
+            <div class="mt-8 flex justify-between items-center pt-8 border-t border-outline-variant/30 dark:border-white/5">
+                <div class="flex space-x-4">
+                    <button type="button" class="text-on-surface-variant hover:text-on-surface transition-colors p-2 hover:bg-on-surface/5 rounded-lg active:scale-95">
+                        <span class="material-symbols-outlined" data-icon="format_bold">format_bold</span>
+                    </button>
+                    <button type="button" class="text-on-surface-variant hover:text-on-surface transition-colors p-2 hover:bg-on-surface/5 rounded-lg active:scale-95">
+                        <span class="material-symbols-outlined" data-icon="format_italic">format_italic</span>
+                    </button>
+                </div>
+                <button type="submit" class="bg-primary text-on-primary font-label uppercase tracking-widest text-xs px-8 py-3 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center space-x-2 shadow-lg hover:shadow-primary/20">
+                    <span class="material-symbols-outlined text-[18px]" data-icon="save">save</span>
+                    <span id="save-text-label">Save Draft</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div id="delete-modal" class="fixed inset-0 bg-surface/80 dark:bg-black/80 backdrop-blur-2xl z-[100] hidden items-center justify-center p-4 transition-opacity duration-500 opacity-0">
+        <div class="bg-surface-container-high/90 dark:bg-surface-container-high/80 backdrop-blur-3xl border border-error/30 w-full max-w-sm p-8 rounded-3xl shadow-[0_0_80px_rgba(0,0,0,0.2)] relative overflow-hidden transition-all transform opacity-100 scale-100 text-center">
+            <span class="material-symbols-outlined text-4xl text-error mb-4">delete_forever</span>
+            <h2 class="font-headline text-2xl text-on-surface mb-2">Excluir Registro?</h2>
+            <p class="font-body text-sm text-on-surface-variant mb-8">Esta ação não pode ser desfeita. O texto será perdido permanentemente na nuvem.</p>
+            <div class="flex space-x-4">
+                <button type="button" class="flex-1 bg-surface-container-highest/50 text-on-surface font-label uppercase tracking-widest text-xs px-4 py-3 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all close-modal-button" data-close="delete-modal">
+                    Cancelar
+                </button>
+                <button type="button" id="confirm-delete-button" class="flex-1 bg-error text-on-error font-label uppercase tracking-widest text-xs px-4 py-3 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(238,125,119,0.2)]">
+                    Excluir
+                </button>
             </div>
         </div>
-    </dialog>
+    </div>
 
-    <!-- HELP MODAL -->
-    <dialog id="help-modal" class="modal">
-        <div class="modal-overlay" data-close="help-modal" style="position:absolute; inset:0;"></div>
-        <div class="modal-container">
-            <div class="modal-top-accent"></div>
-            <button class="close-modal-button" data-close="help-modal" aria-label="Fechar">
-                <span class="material-symbols-outlined">close</span>
+    <!-- New/Edit Collection Modal -->
+    <div id="collection-modal" class="fixed inset-0 bg-surface/80 dark:bg-black/80 backdrop-blur-2xl z-[100] hidden items-center justify-center p-4 transition-opacity duration-500 opacity-0">
+        <div class="bg-surface-container-high/90 dark:bg-surface-container-high/80 backdrop-blur-3xl border border-outline-variant/30 dark:border-white/10 w-full max-w-md p-10 rounded-3xl shadow-[0_0_80px_rgba(0,0,0,0.2)] dark:shadow-[0_0_80px_rgba(0,0,0,0.6)] relative overflow-hidden transition-all transform opacity-100 scale-100">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-surface-variant"></div>
+            <button class="absolute top-6 right-6 text-on-surface-variant hover:text-on-surface hover:bg-on-surface/10 rounded-full p-1 transition-all close-modal-button flex items-center justify-center" data-close="collection-modal">
+                <span class="material-symbols-outlined" data-icon="close">close</span>
             </button>
-            <h2 class="font-headline" style="font-size: 1.875rem; color: var(--on-surface); font-weight: 300; margin-bottom: 0.5rem;">Help</h2>
-            <p class="font-body" style="font-size: 0.875rem; color: var(--on-surface-variant); margin-bottom: 2rem;">Sanctuary Instructions.</p>
+            <h2 id="collection-modal-title" class="font-headline text-3xl text-on-surface mb-2 font-light">Nova Coleção</h2>
+            <p class="font-body text-sm text-on-surface-variant mb-8">Organize seu relicário.</p>
+            <form id="collection-form" class="space-y-6">
+                <input type="hidden" id="edit-collection-id" value="">
+                <div>
+                    <label class="block text-xs font-label text-on-surface-variant uppercase tracking-widest mb-3">Nome</label>
+                    <input id="collection-name" class="w-full bg-surface-container-highest/50 border border-outline-variant/30 rounded-xl py-3 px-4 text-on-surface font-body focus:outline-none focus:border-primary/50 transition-all placeholder-on-surface-variant/50" placeholder="Ex: Filosofia Estoica" type="text" required />
+                </div>
+                <div>
+                    <label class="block text-xs font-label text-on-surface-variant uppercase tracking-widest mb-3">Ícone</label>
+                    <div id="icon-picker" class="grid grid-cols-6 gap-2">
+                        <button type="button" data-icon="folder" class="icon-pick p-3 rounded-xl border border-outline-variant/30 hover:border-primary/50 transition-all text-on-surface-variant hover:text-primary flex items-center justify-center"><span class="material-symbols-outlined">folder</span></button>
+                        <button type="button" data-icon="menu_book" class="icon-pick p-3 rounded-xl border border-outline-variant/30 hover:border-primary/50 transition-all text-on-surface-variant hover:text-primary flex items-center justify-center"><span class="material-symbols-outlined">menu_book</span></button>
+                        <button type="button" data-icon="auto_stories" class="icon-pick p-3 rounded-xl border border-outline-variant/30 hover:border-primary/50 transition-all text-on-surface-variant hover:text-primary flex items-center justify-center"><span class="material-symbols-outlined">auto_stories</span></button>
+                        <button type="button" data-icon="history" class="icon-pick p-3 rounded-xl border border-outline-variant/30 hover:border-primary/50 transition-all text-on-surface-variant hover:text-primary flex items-center justify-center"><span class="material-symbols-outlined">history</span></button>
+                        <button type="button" data-icon="edit_note" class="icon-pick p-3 rounded-xl border border-outline-variant/30 hover:border-primary/50 transition-all text-on-surface-variant hover:text-primary flex items-center justify-center"><span class="material-symbols-outlined">edit_note</span></button>
+                        <button type="button" data-icon="bookmark" class="icon-pick p-3 rounded-xl border border-outline-variant/30 hover:border-primary/50 transition-all text-on-surface-variant hover:text-primary flex items-center justify-center"><span class="material-symbols-outlined">bookmark</span></button>
+                        <button type="button" data-icon="favorite" class="icon-pick p-3 rounded-xl border border-outline-variant/30 hover:border-primary/50 transition-all text-on-surface-variant hover:text-primary flex items-center justify-center"><span class="material-symbols-outlined">favorite</span></button>
+                        <button type="button" data-icon="star" class="icon-pick p-3 rounded-xl border border-outline-variant/30 hover:border-primary/50 transition-all text-on-surface-variant hover:text-primary flex items-center justify-center"><span class="material-symbols-outlined">star</span></button>
+                        <button type="button" data-icon="lightbulb" class="icon-pick p-3 rounded-xl border border-outline-variant/30 hover:border-primary/50 transition-all text-on-surface-variant hover:text-primary flex items-center justify-center"><span class="material-symbols-outlined">lightbulb</span></button>
+                        <button type="button" data-icon="psychology" class="icon-pick p-3 rounded-xl border border-outline-variant/30 hover:border-primary/50 transition-all text-on-surface-variant hover:text-primary flex items-center justify-center"><span class="material-symbols-outlined">psychology</span></button>
+                        <button type="button" data-icon="science" class="icon-pick p-3 rounded-xl border border-outline-variant/30 hover:border-primary/50 transition-all text-on-surface-variant hover:text-primary flex items-center justify-center"><span class="material-symbols-outlined">science</span></button>
+                        <button type="button" data-icon="code" class="icon-pick p-3 rounded-xl border border-outline-variant/30 hover:border-primary/50 transition-all text-on-surface-variant hover:text-primary flex items-center justify-center"><span class="material-symbols-outlined">code</span></button>
+                    </div>
+                    <input type="hidden" id="collection-icon" value="folder">
+                </div>
+                <button type="submit" class="w-full bg-primary text-on-primary font-label uppercase tracking-widest text-xs px-8 py-3 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg mt-4">
+                    <span id="collection-save-label">Criar Coleção</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Collection Modal -->
+    <div id="delete-collection-modal" class="fixed inset-0 bg-surface/80 dark:bg-black/80 backdrop-blur-2xl z-[100] hidden items-center justify-center p-4 transition-opacity duration-500 opacity-0">
+        <div class="bg-surface-container-high/90 dark:bg-surface-container-high/80 backdrop-blur-3xl border border-error/30 w-full max-w-sm p-8 rounded-3xl shadow-[0_0_80px_rgba(0,0,0,0.2)] relative overflow-hidden transition-all transform opacity-100 scale-100 text-center">
+            <span class="material-symbols-outlined text-4xl text-error mb-4">folder_delete</span>
+            <h2 class="font-headline text-2xl text-on-surface mb-2">Excluir Coleção?</h2>
+            <p class="font-body text-sm text-on-surface-variant mb-8">Todos os textos desta coleção serão perdidos permanentemente.</p>
+            <div class="flex space-x-4">
+                <button type="button" class="flex-1 bg-surface-container-highest/50 text-on-surface font-label uppercase tracking-widest text-xs px-4 py-3 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all close-modal-button" data-close="delete-collection-modal">
+                    Cancelar
+                </button>
+                <button type="button" id="confirm-delete-collection-button" class="flex-1 bg-error text-on-error font-label uppercase tracking-widest text-xs px-4 py-3 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(238,125,119,0.2)]">
+                    Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 bg-surface/60 dark:bg-black/60 backdrop-blur-2xl z-[100] hidden items-center justify-center p-4 transition-opacity duration-500 opacity-0">
+        <div class="bg-surface-container-high/90 dark:bg-surface-container-high/80 backdrop-blur-3xl border border-outline-variant/30 dark:border-white/10 w-full max-w-lg p-10 rounded-3xl shadow-[0_0_80px_rgba(0,0,0,0.2)] dark:shadow-[0_0_80px_rgba(0,0,0,0.6)] relative overflow-hidden transition-all transform opacity-100 scale-100">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-surface-variant"></div>
+            <button class="absolute top-6 right-6 text-on-surface-variant hover:text-on-surface hover:bg-on-surface/10 rounded-full p-1 transition-all close-modal-button flex items-center justify-center" data-close="settings-modal">
+                <span class="material-symbols-outlined" data-icon="close">close</span>
+            </button>
+            <h2 class="font-headline text-3xl text-on-surface mb-2 font-light">Preferences</h2>
+            <p class="font-body text-sm text-on-surface-variant mb-8">Customize your sanctuary.</p>
             
-            <div class="prose">
-                <p>Navegue pelas suas coleções na barra lateral The Reliquary.</p>
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-xs font-label text-on-surface-variant uppercase tracking-widest mb-3">Família Tipográfica</label>
+                    <div class="relative">
+                        <select id="setting-font" class="w-full bg-surface-container-highest/50 border border-outline-variant/30 rounded-xl py-3 px-4 text-on-surface font-body focus:outline-none focus:border-primary/50 transition-all appearance-none cursor-pointer">
+                            <option value="serif">Newsreader (Serifa Clássica)</option>
+                            <option value="sans">Manrope (Moderna Sem Serifa)</option>
+                            <option value="mono">Monospace (Técnica)</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute right-4 top-3.5 text-[18px] pointer-events-none text-on-surface-variant">arrow_drop_down</span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-label text-on-surface-variant uppercase tracking-widest mb-3">Tamanho da Leitura</label>
+                    <div class="relative">
+                        <select id="setting-size" class="w-full bg-surface-container-highest/50 border border-outline-variant/30 rounded-xl py-3 px-4 text-on-surface font-body focus:outline-none focus:border-primary/50 transition-all appearance-none cursor-pointer">
+                            <option value="small">Pequeno</option>
+                            <option value="medium">Médio (Padrão)</option>
+                            <option value="large">Grande</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute right-4 top-3.5 text-[18px] pointer-events-none text-on-surface-variant">arrow_drop_down</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="fixed inset-0 bg-surface/90 backdrop-blur-2xl z-[100] hidden items-center justify-center p-4 transition-opacity duration-500 opacity-0">
+        <div class="bg-surface-container-high w-full max-w-md p-12 rounded-sm shadow-2xl relative overflow-hidden">
+            <button class="absolute top-6 right-6 text-on-surface-variant hover:text-on-surface transition-colors close-modal-button" data-close="help-modal">
+                <span class="material-symbols-outlined" data-icon="close">close</span>
+            </button>
+            <h2 class="font-headline text-3xl text-on-surface mb-2 font-light">Help</h2>
+            <p class="font-body text-sm text-on-surface-variant mb-6">Sanctuary Instructions.</p>
+            <div class="font-body text-base text-on-surface space-y-4 mb-8">
+                <p>Navegue pelas suas coleções na barra lateral.</p>
                 <p>Autentique-se usando o botão Sign In no topo para permitir a criação e gravação de novos textos originais.</p>
             </div>
-            
-            <div class="form-actions" style="border-top: none; justify-content: flex-end;">
-                 <button type="button" class="btn-ghost" data-close="help-modal">Entendido</button>
+            <div class="flex justify-end">
+                <button type="button" class="text-on-surface-variant hover:text-primary font-label uppercase tracking-widest text-xs close-modal-button" data-close="help-modal">Entendido</button>
             </div>
         </div>
-    </dialog>
+    </div>
+
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="fixed inset-0 bg-surface/50 backdrop-blur-sm z-30 hidden md:hidden"></div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script type="module" src="src/app.js"></script>
 
-    <!-- (DUMMY ELEMENTS FOR DOM.JS) -->
-    <div id="mobile-overlay" style="display:none;"></div>
-    <button id="mobile-menu-toggle" style="display:none;"></button>
-    <button id="close-sidebar" style="display:none;"></button>
-    <button id="back-to-reading" style="display:none;"></button>
-    <button id="show-text-list" style="display:none;"></button>
-    
-    <!-- NEW TEXT MODAL -->
-    <dialog id="new-text-modal" class="modal">
-        <div class="modal-overlay" data-close="new-text-modal" style="position:absolute; inset:0;"></div>
-        <div class="modal-container" style="max-width: 48rem;"> <!-- wider for text editing -->
-            <div class="modal-top-accent"></div>
-            <button class="close-modal-button" data-close="new-text-modal" aria-label="Fechar">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-            <h2 class="font-headline" style="font-size: 1.875rem; color: var(--on-surface); font-weight: 300; margin-bottom: 0.5rem;">Draft New Text</h2>
-            <p class="font-body" style="font-size: 0.875rem; color: var(--on-surface-variant); margin-bottom: 2rem;">Inscribe your thoughts into the reliquary.</p>
-            
-            <form id="new-text-form" style="display: flex; flex-direction: column; gap: 1.5rem;">
-                <!-- Select Collection -->
-                <div class="form-group" style="margin-bottom: 0;">
-                    <select id="new-collection" class="floating-input" style="color: var(--on-surface); appearance: none;" required>
-                        <!-- Injected by JS -->
-                    </select>
-                    <label for="new-collection" class="floating-label" style="top: -0.875rem; font-size: 0.75rem; color: var(--primary);">Collection</label>
-                </div>
-                
-                <!-- Title -->
-                <div class="form-group" style="margin-bottom: 0;">
-                    <input type="text" id="new-title" class="floating-input" placeholder=" " required autocomplete="off">
-                    <label for="new-title" class="floating-label">Title</label>
-                </div>
-                
-                <!-- Content Area -->
-                <div class="form-group" style="margin-bottom: 0;">
-                    <textarea id="new-content" class="floating-input" placeholder=" " rows="8" required style="resize: none; padding-top: 1rem;"></textarea>
-                    <label for="new-content" class="floating-label">Body Text (Markdown/Raw)</label>
-                </div>
-                
-                <div class="form-actions" style="margin-top: 1rem; display: flex; justify-content: flex-end; gap: 1rem;">
-                    <button type="button" class="btn-ghost" data-close="new-text-modal">Cancel</button>
-                    <button type="submit" class="btn-primary" style="width: auto; padding-left: 2rem; padding-right: 2rem;">Publish</button>
-                </div>
-            </form>
-        </div>
-    </dialog>
 </body>
 </html>
