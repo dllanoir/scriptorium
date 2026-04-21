@@ -60,6 +60,7 @@ export const UI = {
                 const option = document.createElement('option');
                 option.value = col.id;
                 option.textContent = col.name;
+                option.className = "bg-stone-900 text-stone-100";
                 DOM.newCollectionSelect.appendChild(option);
             });
     },
@@ -72,14 +73,14 @@ export const UI = {
                 setTimeout(() => DOM.authGate.classList.add('hidden'), 1000);
             }
             
-            DOM.app?.classList.remove('opacity-0', 'hidden');
+            if (DOM.app) DOM.app.classList.remove('opacity-0', 'hidden');
             const navbar = document.querySelector('nav');
             if (navbar) navbar.classList.remove('opacity-0', 'hidden');
             
-            DOM.userInfo.classList.remove('hidden');
-            DOM.userEmail.textContent = session.user.email;
-            DOM.authButton.innerHTML = `${Icons.logout}<span>Logout</span>`;
-            DOM.newTextBtn.style.display = 'flex';
+            if (DOM.userInfo) DOM.userInfo.classList.remove('hidden');
+            if (DOM.userEmail) DOM.userEmail.textContent = session.user.email;
+            if (DOM.authButton) DOM.authButton.innerHTML = `${Icons.logout}<span>Logout</span>`;
+            if (DOM.newTextBtn) DOM.newTextBtn.style.display = 'flex';
             if (DOM.textActions) DOM.textActions.classList.remove('hidden');
             if (DOM.addCollectionBtn) DOM.addCollectionBtn.style.display = 'flex';
             State.user = session.user;
@@ -90,14 +91,14 @@ export const UI = {
                 setTimeout(() => DOM.authGate.classList.remove('opacity-0', 'pointer-events-none'), 10);
             }
             
-            DOM.app?.classList.add('opacity-0', 'hidden');
+            if (DOM.app) DOM.app.classList.add('opacity-0', 'hidden');
             const navbar = document.querySelector('nav');
             if (navbar) navbar.classList.add('opacity-0', 'hidden');
             
-            DOM.userInfo.classList.add('hidden');
-            DOM.userEmail.textContent = '';
-            DOM.authButton.innerHTML = `${Icons.login}<span>Login</span>`;
-            DOM.newTextBtn.style.display = 'none';
+            if (DOM.userInfo) DOM.userInfo.classList.add('hidden');
+            if (DOM.userEmail) DOM.userEmail.textContent = '';
+            if (DOM.authButton) DOM.authButton.innerHTML = `${Icons.login}<span>Login</span>`;
+            if (DOM.newTextBtn) DOM.newTextBtn.style.display = 'none';
             if (DOM.textActions) DOM.textActions.classList.add('hidden');
             if (DOM.addCollectionBtn) DOM.addCollectionBtn.style.display = 'none';
             State.user = null;
@@ -119,13 +120,29 @@ export const UI = {
     },
     
     toggleMobileSidebar: () => {
-        DOM.sidebar.classList.toggle('-translate-x-full');
-        DOM.mobileOverlay.classList.toggle('hidden');
+        const isOpen = !DOM.sidebar.classList.contains('-translate-x-full');
+        if (isOpen) {
+            DOM.sidebar.classList.add('-translate-x-full');
+            DOM.mobileOverlay.classList.add('opacity-0');
+            setTimeout(() => DOM.mobileOverlay.classList.add('hidden'), 500);
+        } else {
+            DOM.mobileOverlay.classList.remove('hidden');
+            setTimeout(() => {
+                DOM.sidebar.classList.remove('-translate-x-full');
+                DOM.mobileOverlay.classList.remove('opacity-0');
+            }, 10);
+        }
     },
     
-    showMobileTextList: () => DOM.textListSection.classList.remove('translate-x-full'),
+    showMobileTextList: () => {
+        DOM.textListSection.classList.remove('-translate-x-full');
+        DOM.textListSection.classList.add('translate-x-0');
+    },
     
-    hideMobileTextList: () => DOM.textListSection.classList.add('translate-x-full'),
+    hideMobileTextList: () => {
+        DOM.textListSection.classList.add('-translate-x-full');
+        DOM.textListSection.classList.remove('translate-x-0');
+    },
 
     /**
      * Injects the static layout components into the DOM.

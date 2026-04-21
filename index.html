@@ -21,6 +21,13 @@
     <style>
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Estilo para options de seletores em navegadores que suportam */
+        select option {
+            background-color: #1c1917 !important; /* stone-900 */
+            color: #f5f5f4 !important; /* stone-100 */
+            padding: 12px;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-[#151718] via-surface to-[#0a0a0a] text-on-surface font-body antialiased overflow-hidden selection:bg-primary selection:text-on-primary">
@@ -29,10 +36,7 @@
     <div id="auth-gate" class="fixed inset-0 z-[200] transition-opacity duration-1000 bg-[#0e0e0e]"></div>
 
     <!-- App Container (Layout injected here via UI.initLayout) -->
-    <div id="app" class="flex h-screen w-full pt-28 pb-6 px-8 gap-6 max-w-[1600px] mx-auto"></div>
-
-    <!-- Mobile Overlay -->
-    <div id="mobile-overlay" class="fixed inset-0 bg-surface/50 backdrop-blur-sm z-30 hidden md:hidden"></div>
+    <div id="app" class="flex h-screen w-full pt-28 pb-4 md:pb-6 px-4 md:px-8 gap-2 md:gap-6 max-w-[1600px] mx-auto overflow-hidden"></div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.42.0/dist/umd/supabase.min.js" integrity="sha384-uzk/VDw/PEvvd57U+vmaAENHLhf8txymedR2ItOaKVGY4KRwRHH8ndy9cq0bh2NQ" crossorigin="anonymous"></script>

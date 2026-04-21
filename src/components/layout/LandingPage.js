@@ -10,15 +10,15 @@ export function LandingPage() {
         <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[120px]"></div>
         <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[#1f2020] blur-[150px]"></div>
         
-        <div class="z-10 w-full max-w-lg px-8 py-12 flex flex-col items-center">
+        <div class="z-10 w-full max-w-lg px-6 md:px-8 py-8 md:py-12 flex flex-col items-center">
             <!-- Branding -->
-            <div class="text-center mb-16 animate-fade-in">
-                <h1 class="font-headline text-7xl font-extralight tracking-[0.2em] text-on-surface mb-4">SCRIPTORIUM</h1>
-                <p class="font-body text-on-surface-variant text-sm uppercase tracking-[0.4em] opacity-80">Focus on your thoughts, your digital sanctuary.</p>
+            <div class="text-center mb-10 md:mb-16 animate-fade-in px-4">
+                <h1 class="font-headline text-4xl sm:text-5xl md:text-7xl font-extralight tracking-[0.2em] text-on-surface mb-4">SCRIPTORIUM</h1>
+                <p class="font-body text-on-surface-variant text-[10px] sm:text-xs md:text-sm uppercase tracking-[0.3em] md:tracking-[0.4em] opacity-80 leading-relaxed">Focus on your thoughts, your digital sanctuary.</p>
             </div>
             
             <!-- Auth Card (Glassmorphism) -->
-            <div class="w-full bg-surface-container-high/40 backdrop-blur-[20px] border border-white/5 rounded-[2.5rem] p-12 shadow-[0_20px_50px_rgba(0,0,0,0.5)] transform transition-all duration-700">
+            <div class="w-full bg-surface-container-high/40 backdrop-blur-[20px] border border-white/5 rounded-[2.5rem] p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.5)] transform transition-all duration-700">
                 <h2 class="font-headline text-2xl text-on-surface mb-8 font-light text-center">Enter the Sanctuary</h2>
                 
                 <form id="landing-login-form" class="space-y-8">
