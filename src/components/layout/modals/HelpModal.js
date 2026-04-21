@@ -3,8 +3,8 @@
  */
 export function HelpModal() {
     return `
-    <div id="help-modal" class="fixed inset-0 bg-surface/90 backdrop-blur-2xl z-[100] hidden items-center justify-center p-4 transition-opacity duration-500 opacity-0">
-        <div class="bg-surface-container-high w-full max-w-md p-12 rounded-sm shadow-2xl relative overflow-hidden">
+    <div id="help-modal" class="fixed inset-0 bg-surface/80 dark:bg-black/80 backdrop-blur-3xl z-[999] hidden items-center justify-center p-4 transition-opacity duration-500 opacity-0">
+        <div class="bg-surface-container-high/90 dark:bg-surface-container-high/80 backdrop-blur-3xl border border-outline-variant/30 dark:border-white/10 w-full max-w-lg p-6 md:p-10 rounded-3xl shadow-[0_0_80px_rgba(0,0,0,0.2)] dark:shadow-[0_0_80px_rgba(0,0,0,0.6)] relative overflow-hidden transition-all transform opacity-100 scale-100">
             <button class="absolute top-6 right-6 text-on-surface-variant hover:text-on-surface transition-colors close-modal-button" data-close="help-modal">
                 <span class="material-symbols-outlined" data-icon="close">close</span>
             </button>

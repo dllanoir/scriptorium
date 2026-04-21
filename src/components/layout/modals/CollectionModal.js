@@ -3,13 +3,13 @@
  */
 export function CollectionModal() {
     return `
-    <div id="collection-modal" class="fixed inset-0 bg-surface/80 dark:bg-black/80 backdrop-blur-2xl z-[100] hidden items-center justify-center p-4 transition-opacity duration-500 opacity-0">
-        <div class="bg-surface-container-high/90 dark:bg-surface-container-high/80 backdrop-blur-3xl border border-outline-variant/30 dark:border-white/10 w-full max-w-md p-10 rounded-3xl shadow-[0_0_80px_rgba(0,0,0,0.2)] dark:shadow-[0_0_80px_rgba(0,0,0,0.6)] relative overflow-hidden transition-all transform opacity-100 scale-100">
+    <div id="collection-modal" class="fixed inset-0 bg-surface/80 dark:bg-black/80 backdrop-blur-2xl z-[999] hidden items-center justify-center p-4 transition-opacity duration-500 opacity-0">
+        <div class="bg-surface-container-high/90 dark:bg-surface-container-high/80 backdrop-blur-3xl border border-outline-variant/30 dark:border-white/10 w-full max-w-md p-6 md:p-10 rounded-3xl shadow-[0_0_80px_rgba(0,0,0,0.2)] dark:shadow-[0_0_80px_rgba(0,0,0,0.6)] relative overflow-hidden transition-all transform opacity-100 scale-100">
             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-surface-variant"></div>
             <button class="absolute top-6 right-6 text-on-surface-variant hover:text-on-surface hover:bg-on-surface/10 rounded-full p-1 transition-all close-modal-button flex items-center justify-center" data-close="collection-modal">
                 <span class="material-symbols-outlined" data-icon="close">close</span>
             </button>
-            <h2 id="collection-modal-title" class="font-headline text-3xl text-on-surface mb-2 font-light">Nova Coleção</h2>
+            <h2 id="collection-modal-title" class="font-headline text-2xl md:text-3xl text-on-surface mb-2 font-light">Nova Coleção</h2>
             <p class="font-body text-sm text-on-surface-variant mb-8">Organize seu relicário.</p>
             <form id="collection-form" class="space-y-6">
                 <input type="hidden" id="edit-collection-id" value="">
@@ -37,7 +37,8 @@ export function CollectionModal() {
                     </div>
                     <input type="hidden" id="collection-icon" value="folder">
                 </div>
-                <button type="submit" class="w-full bg-primary text-on-primary font-label uppercase tracking-widest text-xs px-8 py-3 rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg mt-4">
+                <button type="submit" class="w-full bg-primary text-on-primary font-label uppercase tracking-widest text-[11px] px-8 py-3.5 rounded-xl hover:bg-primary/90 active:scale-95 transition-all flex items-center justify-center space-x-2 shadow-sm mt-4">
+                    <span class="material-symbols-outlined text-[18px]">add_circle</span>
                     <span id="collection-save-label">Criar Coleção</span>
                 </button>
             </form>

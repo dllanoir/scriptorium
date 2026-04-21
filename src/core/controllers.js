@@ -60,6 +60,12 @@ export const Controllers = {
         UI.renderCollections();
         UI.renderTextList(DOM.searchBox.value);
         UI.renderTextContent();
+
+        // Mobile: Show text list after selecting collection
+        if (window.innerWidth < 1024) {
+            UI.showMobileTextList();
+            UI.toggleMobileSidebar(); // Close sidebar drawer
+        }
     },
 
     /**
@@ -69,6 +75,11 @@ export const Controllers = {
         State.activeTextId = textId;
         UI.renderTextList(DOM.searchBox.value);
         UI.renderTextContent();
+
+        // Mobile: Hide text list after selecting text to focus on reading pane
+        if (window.innerWidth < 1024 && textId) {
+            UI.hideMobileTextList();
+        }
     },
 
     /**

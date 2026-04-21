@@ -119,7 +119,7 @@ function attachEventListeners() {
     if (DOM.closeSidebarBtn) DOM.closeSidebarBtn.addEventListener('click', UI.toggleMobileSidebar);
     if (DOM.mobileOverlay) DOM.mobileOverlay.addEventListener('click', UI.toggleMobileSidebar);
     if (DOM.backToReadingBtn) DOM.backToReadingBtn.addEventListener('click', UI.hideMobileTextList);
-    if (DOM.showTextListBtn) DOM.showTextListBtn.addEventListener('click', UI.showMobileTextList);
+    if (DOM.showTextListBtn) DOM.showTextListBtn.addEventListener('click', () => Controllers.handleCollectionSelect(1));
 
     // Settings and Help
     if (DOM.settingsBtn && DOM.settingsModal) {

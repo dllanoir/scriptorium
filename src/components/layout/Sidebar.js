@@ -3,11 +3,12 @@
  */
 export function Sidebar() {
     return `
-    <aside class="w-72 border border-white/5 bg-stone-900/30 backdrop-blur-xl rounded-2xl shadow-xl hidden lg:flex flex-col h-full p-6 gap-6 overflow-y-auto transition-opacity duration-700">
-        <div class="relative group mt-2">
-            <label for="search-box" class="sr-only">Pesquisar textos</label>
-            <input id="search-box" class="w-full bg-black/20 rounded-xl border border-white/5 focus:border-primary/50 focus:bg-black/40 text-on-surface font-body text-sm py-2.5 pl-10 focus:ring-0 transition-all duration-300 placeholder-on-surface-variant/50" placeholder="Search..." type="text"/>
-            <span class="material-symbols-outlined absolute left-3 top-3 text-on-surface-variant/50 group-focus-within:text-primary transition-colors text-[18px]" data-icon="search">search</span>
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-[60] w-72 border-r border-white/5 bg-stone-900/90 backdrop-blur-2xl shadow-2xl flex flex-col p-6 gap-6 overflow-y-auto transform -translate-x-full lg:translate-x-0 lg:static lg:bg-stone-900/30 lg:shadow-xl lg:rounded-2xl lg:h-full transition-transform duration-500 ease-in-out">
+        <div class="flex items-center justify-between lg:hidden mb-2">
+            <div class="font-headline italic text-xl text-stone-100">Coleções</div>
+            <button id="close-sidebar" class="text-stone-400 hover:text-white p-2">
+                <span class="material-symbols-outlined">close</span>
+            </button>
         </div>
         
         <div class="flex flex-col space-y-1">
@@ -34,5 +35,7 @@ export function Sidebar() {
                 <span>Help</span>
             </a>
         </div>
-    </aside>`;
+    </aside>
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[55] hidden lg:hidden transition-opacity duration-500 opacity-0"></div>`;
 }
