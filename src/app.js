@@ -2,7 +2,7 @@ import { initDOM, DOM } from './core/dom.js';
 import { Api } from './api/index.js';
 import { UI } from './components/index.js';
 import { Controllers } from './core/controllers.js';
-import { State } from './core/state.js';
+import { State, subscribe } from './core/state.js';
 import { Utils } from './utils/index.js';
 import { Settings } from './core/settings.js';
 
@@ -10,14 +10,26 @@ import { Settings } from './core/settings.js';
  * Attaches all global event listeners.
  */
 function attachEventListeners() {
+    // Reactive State Subscriptions
+    subscribe((prop, value) => {
+        if (prop === 'user') {
+            UI.updateAuthUI(value);
+        }
+        if (prop === 'collections') {
+            UI.renderCollections();
+        }
+        if (prop === 'texts' || prop === 'activeCollectionId' || prop === 'activeTextId') {
+            UI.renderTextList(DOM.searchBox.value);
+            UI.renderTextContent();
+        }
+    });
+
     // Auth State Change Observer
     Api.onAuthStateChange(async (event, session) => {
         // Broadened to handle INITIAL_SESSION and other state changes consistently
+        State.user = session;
         if (session) {
-            UI.updateAuthUI(session);
             await Controllers.loadData();
-        } else {
-            UI.updateAuthUI(null);
         }
     });
 

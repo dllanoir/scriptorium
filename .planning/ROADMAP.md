@@ -5,13 +5,13 @@
 ## Phase 1: E2E Testing Foundation
 **Goal:** Setup Playwright and cover critical flows before refactoring.
 **Requirements:** REQ-2.1, REQ-2.2, REQ-2.3
-**Status:** ⏳ Pending
+**Status:** ✅ Completed
 
 ## Phase 2: State Refactoring
 **Goal:** Refactor the global `State` to be reactive and decouple the UI components.
 **Requirements:** REQ-3.1, REQ-3.2
 **Depends on:** Phase 1
-**Status:** ⏳ Pending
+**Status:** ✅ Completed
 
 ## Phase 3: PWA & Offline Mode
 **Goal:** Implement Service Workers for caching and offline capabilities.

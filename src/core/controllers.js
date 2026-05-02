@@ -32,10 +32,6 @@ export const Controllers = {
                 State.activeTextId = texts[0].id;
             }
 
-            UI.renderCollections();
-            UI.renderTextList();
-            UI.renderTextContent();
-
         } catch (error) {
             console.error("Erro ao carregar os dados:", error);
             UI.showError("Falha na comunicação com o servidor.");
@@ -56,10 +52,6 @@ export const Controllers = {
             : State.texts.filter(t => parseInt(t.collectionId, 10) === parseInt(collectionId, 10));
         
         State.activeTextId = filteredTexts.length > 0 ? filteredTexts[0].id : null;
-        
-        UI.renderCollections();
-        UI.renderTextList(DOM.searchBox.value);
-        UI.renderTextContent();
 
         // Mobile: Show text list after selecting collection
         if (window.innerWidth < 1024) {
@@ -73,8 +65,6 @@ export const Controllers = {
      */
     handleTextSelect: (textId) => {
         State.activeTextId = textId;
-        UI.renderTextList(DOM.searchBox.value);
-        UI.renderTextContent();
 
         // Mobile: Hide text list after selecting text to focus on reading pane
         if (window.innerWidth < 1024 && textId) {
