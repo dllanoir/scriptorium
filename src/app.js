@@ -203,6 +203,15 @@ function attachEventListeners() {
  * Core Initialization.
  */
 async function init() {
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+        try {
+            await navigator.serviceWorker.register('./sw.js');
+        } catch (e) {
+            console.error('Service Worker registration failed', e);
+        }
+    }
+
     UI.initLayout();
     initDOM();
     
