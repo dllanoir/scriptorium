@@ -26,14 +26,14 @@ export function Sidebar() {
         </div>
 
         <div class="mt-auto flex flex-col space-y-2 pt-8 border-t border-outline-variant/10">
-            <a id="settings-button" class="text-stone-500 hover:text-stone-200 transition-all duration-300 cursor-pointer font-['Manrope'] uppercase tracking-[0.2em] text-[10px] flex items-center p-2 space-x-4">
+            <button type="button" id="settings-button" class="w-full text-left bg-transparent border-none text-stone-500 hover:text-stone-200 transition-all duration-300 cursor-pointer font-['Manrope'] uppercase tracking-[0.2em] text-[10px] flex items-center p-2 space-x-4">
                 <span class="material-symbols-outlined text-[16px]" data-icon="settings">settings</span>
                 <span>Settings</span>
-            </a>
-            <a id="help-button" class="text-stone-500 hover:text-stone-200 transition-all duration-300 cursor-pointer font-['Manrope'] uppercase tracking-[0.2em] text-[10px] flex items-center p-2 space-x-4">
+            </button>
+            <button type="button" id="help-button" class="w-full text-left bg-transparent border-none text-stone-500 hover:text-stone-200 transition-all duration-300 cursor-pointer font-['Manrope'] uppercase tracking-[0.2em] text-[10px] flex items-center p-2 space-x-4">
                 <span class="material-symbols-outlined text-[16px]" data-icon="help_outline">help_outline</span>
                 <span>Help</span>
-            </a>
+            </button>
         </div>
     </aside>
     <!-- Mobile Overlay -->

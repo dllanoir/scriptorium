@@ -25,11 +25,14 @@ const targetState = {
     isLoadingTexts: false,
     isLoadingCollections: false,
     isLoadingData: false,
-    pendingDeleteCollectionId: null
+    pendingDeleteCollectionId: null,
+    isZenMode: false,
+    sortOrder: (typeof localStorage !== 'undefined' && localStorage.getItem('scriptorium_sort_order')) || 'newest'
 };
 
 export const State = new Proxy(targetState, {
     set(target, prop, value) {
+        if (target[prop] === value) return true;
         target[prop] = value;
         notify(prop, value, target);
         return true;

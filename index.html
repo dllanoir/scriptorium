@@ -8,6 +8,8 @@
     <!-- CSP Meta Tag for security -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://*.supabase.co 'sha256-vvt4KWwuNr51XfE5m+hzeNEGhiOfZzG97ccfqGsPwvE='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co https://cdn.jsdelivr.net http://localhost:* ws://localhost:* http://127.0.0.1:* ws://127.0.0.1:*;">
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c1917'/%3E%3Cpath d='M8 22V10c0-1.1.9-2 2-2h12c1.1 0 2 .9 2 2v12' stroke='%23d4af37' stroke-width='2' fill='none'/%3E%3Cpath d='M12 14h8M12 18h5' stroke='%23d4af37' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E">
     <link rel="manifest" href="./manifest.json">
     <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" />
@@ -34,14 +36,14 @@
 <body class="bg-gradient-to-br from-[#151718] via-surface to-[#0a0a0a] text-on-surface font-body antialiased overflow-hidden selection:bg-primary selection:text-on-primary">
 
     <!-- Landing Page / Auth Gate -->
-    <div id="auth-gate" class="fixed inset-0 z-[200] transition-opacity duration-1000 bg-[#0e0e0e]"></div>
+    <div id="auth-gate" class="fixed inset-0 z-[200] transition-opacity duration-1000 bg-[#0e0e0e] overflow-y-auto overflow-x-hidden"></div>
 
     <!-- App Container (Layout injected here via UI.initLayout) -->
-    <div id="app" class="flex h-screen w-full pt-28 pb-4 md:pb-6 px-4 md:px-8 gap-2 md:gap-6 max-w-[1600px] mx-auto overflow-hidden"></div>
+    <div id="app" class="flex h-screen w-full pt-20 sm:pt-24 pb-3 md:pb-5 px-3 sm:px-4 md:px-6 gap-2 md:gap-6 max-w-[1600px] mx-auto overflow-hidden"></div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.42.0/dist/umd/supabase.min.js" integrity="sha384-uzk/VDw/PEvvd57U+vmaAENHLhf8txymedR2ItOaKVGY4KRwRHH8ndy9cq0bh2NQ" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js" integrity="sha384-1ypXlohFqSnDLddhnZiShX//tfF/8DnI48Om/a4duN13pHb1ptyRaxBONqaAb61d" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js" integrity="sha384-HV48j9xMNfX80v1dhiML90VeD4a38xrehnBK+dNSSe8P4fija/zP36u52q7TpB6O" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.9/dist/purify.min.js" integrity="sha384-3HPB1XT51W3gGRxAmZ+qbZwRpRlFQL632y8x+adAqCr4Wp3TaWwCLSTAJJKbyWEK" crossorigin="anonymous"></script>
     <script type="module" src="src/app.js"></script>
 

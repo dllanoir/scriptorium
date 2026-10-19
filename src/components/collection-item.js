@@ -36,18 +36,22 @@ export function CollectionItem({ collection }) {
     // Actions (Edit/Delete) - only for non-system collections
     if (collection.id !== 1) {
         const actionsSpan = document.createElement('span');
-        actionsSpan.className = "collection-actions ml-auto flex space-x-1 opacity-0 group-hover/col:opacity-100 transition-opacity";
+        actionsSpan.className = "collection-actions ml-auto flex space-x-1 opacity-100 lg:opacity-0 lg:group-hover/col:opacity-100 focus-within:opacity-100 transition-opacity";
         
-        const editBtn = document.createElement('span');
-        editBtn.className = "collection-edit-btn material-symbols-outlined text-[14px] hover:text-primary cursor-pointer p-0.5 rounded";
+        const editBtn = document.createElement('button');
+        editBtn.type = "button";
+        editBtn.className = "collection-edit-btn material-symbols-outlined text-[14px] hover:text-primary cursor-pointer p-0.5 rounded bg-transparent border-none inline-flex items-center justify-center";
         editBtn.dataset.colId = collection.id;
         editBtn.title = "Editar";
+        editBtn.setAttribute('aria-label', `Editar coleção ${collection.name}`);
         editBtn.textContent = "edit";
         
-        const deleteBtn = document.createElement('span');
-        deleteBtn.className = "collection-delete-btn material-symbols-outlined text-[14px] hover:text-error cursor-pointer p-0.5 rounded";
+        const deleteBtn = document.createElement('button');
+        deleteBtn.type = "button";
+        deleteBtn.className = "collection-delete-btn material-symbols-outlined text-[14px] hover:text-error cursor-pointer p-0.5 rounded bg-transparent border-none inline-flex items-center justify-center";
         deleteBtn.dataset.colId = collection.id;
         deleteBtn.title = "Excluir";
+        deleteBtn.setAttribute('aria-label', `Excluir coleção ${collection.name}`);
         deleteBtn.textContent = "close";
         
         actionsSpan.appendChild(editBtn);

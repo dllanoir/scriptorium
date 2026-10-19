@@ -33,18 +33,26 @@ export const Settings = {
     init: async () => {
         const local = localStorage.getItem('scriptorium_settings');
         if (local) {
-            Settings.current = { ...Settings.current, ...JSON.parse(local) };
-            Settings.apply();
+            try {
+                Settings.current = { ...Settings.current, ...JSON.parse(local) };
+            } catch (e) {
+                console.error("Erro ao carregar configurações locais:", e);
+            }
         }
-
-        const user = await Api.getUser();
-        if (user && user.user_metadata && user.user_metadata.settings) {
-            Settings.current = { ...Settings.current, ...user.user_metadata.settings };
-            Settings.apply();
-            Settings.saveLocal();
-        }
-
+        Settings.apply();
         Settings.bindUI();
+
+        try {
+            const user = await Api.getUser();
+            if (user && user.user_metadata && user.user_metadata.settings) {
+                Settings.current = { ...Settings.current, ...user.user_metadata.settings };
+                Settings.apply();
+                Settings.saveLocal();
+                Settings.bindUI();
+            }
+        } catch (e) {
+            console.error("Erro ao sincronizar configurações na nuvem:", e);
+        }
     },
 
     /**

@@ -3,6 +3,58 @@ import { State } from '../core/state.js';
 import { Utils } from '../utils/index.js';
 
 /**
+ * Parses basic markdown blocks and inline formats into safe HTML.
+ * @param {string} rawText 
+ * @returns {string}
+ */
+function parseMarkdown(rawText = '') {
+    const formatInline = (str) => {
+        return str
+            .replace(/`([^`]+)`/g, '<code>$1</code>')
+            .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    };
+
+    const lines = rawText.split('\n');
+    const htmlBlocks = [];
+    let currentList = [];
+
+    const flushList = () => {
+        if (currentList.length > 0) {
+            htmlBlocks.push(`<ul>${currentList.map(item => `<li>${formatInline(item)}</li>`).join('')}</ul>`);
+            currentList = [];
+        }
+    };
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) {
+            flushList();
+            continue;
+        }
+
+        if (line === '---' || line === '***') {
+            flushList();
+            htmlBlocks.push('<hr>');
+        } else if (line.startsWith('### ')) {
+            flushList();
+            htmlBlocks.push(`<h3>${formatInline(line.slice(4).trim())}</h3>`);
+        } else if (line.startsWith('> ')) {
+            flushList();
+            htmlBlocks.push(`<blockquote>${formatInline(line.slice(2).trim())}</blockquote>`);
+        } else if (line.startsWith('- ') || line.startsWith('* ')) {
+            currentList.push(line.slice(2).trim());
+        } else {
+            flushList();
+            htmlBlocks.push(`<p>${formatInline(line)}</p>`);
+        }
+    }
+    flushList();
+
+    return htmlBlocks.join('');
+}
+
+/**
  * Manages the reading pane content and its states.
  */
 export const ReadingPane = {
@@ -16,6 +68,7 @@ export const ReadingPane = {
             DOM.emptyState.classList.remove('hidden');
             DOM.contentDisplay.classList.add('hidden');
             DOM.errorState.classList.add('hidden');
+            if (DOM.textMetrics) DOM.textMetrics.textContent = '';
             return;
         }
 
@@ -25,18 +78,17 @@ export const ReadingPane = {
 
         DOM.textTitle.textContent = text.title;
         DOM.textDate.textContent = Utils.formatDate(text.created_at);
-        DOM.textDate.setAttribute('datetime', text.created_at);
+        DOM.textDate.setAttribute('datetime', text.created_at || '');
         
-        // Convert content to HTML safely
-        let htmlContent = '';
-        if (Array.isArray(text.content)) {
-            // Legacy support
-            htmlContent = text.content.map(p => `<p>${p}</p>`).join('');
-        } else {
-            // New format: text with newlines
-            const paragraphs = text.content.split('\n').filter(p => p.trim() !== '');
-            htmlContent = paragraphs.map(p => `<p>${p}</p>`).join('');
-        }
+        const contentStr = Array.isArray(text.content)
+            ? text.content.join('\n\n')
+            : (text.content || '');
+
+        const metrics = Utils.calculateMetrics(contentStr);
+        if (DOM.textMetrics) DOM.textMetrics.textContent = metrics.formatted;
+
+        // Convert content to HTML safely with basic markdown support
+        const htmlContent = parseMarkdown(contentStr);
             
         // Final Sanitization before injection
         DOM.textBody.innerHTML = Utils.sanitize(htmlContent);
@@ -51,5 +103,6 @@ export const ReadingPane = {
         DOM.contentDisplay.classList.add('hidden');
         DOM.errorState.classList.remove('hidden');
         DOM.errorMessage.textContent = message;
+        if (DOM.textMetrics) DOM.textMetrics.textContent = '';
     }
 };

@@ -1,8 +1,12 @@
 const { test, expect } = require('@playwright/test');
+const { setupSupabaseMock } = require('./mocks/supabaseMock');
 
 test.describe('CRUD Operations', () => {
   // Before each test, we need to login
   test.beforeEach(async ({ page }) => {
+    if (!process.env.TEST_EMAIL) {
+      await setupSupabaseMock(page);
+    }
     await page.goto('/');
     const loginForm = page.locator('#landing-login-form');
     await loginForm.waitFor({ state: 'visible' });

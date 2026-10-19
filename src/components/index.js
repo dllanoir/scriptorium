@@ -35,6 +35,30 @@ export const UI = {
             filtered = filtered.filter(t => t.title.toLowerCase().includes(termLower));
         }
 
+        // Sort filtered list according to State.sortOrder
+        const sortOrder = State.sortOrder || 'newest';
+        filtered = [...filtered].sort((a, b) => {
+            if (sortOrder === 'oldest') {
+                const dateA = a.created_at || '';
+                const dateB = b.created_at || '';
+                return dateA.localeCompare(dateB) || (Number(a.id) - Number(b.id));
+            }
+            if (sortOrder === 'alpha_asc') {
+                return (a.title || '').localeCompare(b.title || '', 'pt-BR', { sensitivity: 'base' });
+            }
+            if (sortOrder === 'alpha_desc') {
+                return (b.title || '').localeCompare(a.title || '', 'pt-BR', { sensitivity: 'base' });
+            }
+            // Default 'newest'
+            const dateA = a.created_at || '';
+            const dateB = b.created_at || '';
+            return dateB.localeCompare(dateA) || (Number(b.id) - Number(a.id));
+        });
+
+        if (DOM.textListCount) {
+            DOM.textListCount.textContent = `${filtered.length} ${filtered.length === 1 ? 'texto' : 'textos'}`;
+        }
+
         if (filtered.length === 0 && !State.isLoadingTexts) {
             const emptyMsg = document.createElement('div');
             emptyMsg.className = "text-sm p-4 text-center text-on-surface-variant";
@@ -53,24 +77,37 @@ export const UI = {
     showError: (msg) => ReadingPane.showError(msg),
 
     populateDropdown: () => {
+        if (!DOM.newCollectionSelect) return;
         DOM.newCollectionSelect.innerHTML = '';
-        State.collections
-            .filter(c => c.id !== 1)
-            .forEach(col => {
-                const option = document.createElement('option');
-                option.value = col.id;
-                option.textContent = col.name;
-                option.className = "bg-stone-900 text-stone-100";
-                DOM.newCollectionSelect.appendChild(option);
-            });
+        let available = State.collections.filter(c => c.id !== 1);
+        if (available.length === 0) {
+            available = State.collections.length > 0 ? State.collections : [{ id: 1, name: 'Geral' }];
+        }
+        available.forEach(col => {
+            const option = document.createElement('option');
+            option.value = col.id;
+            option.textContent = col.name;
+            option.className = "bg-stone-900 text-stone-100";
+            DOM.newCollectionSelect.appendChild(option);
+        });
+
+        if (State.activeCollectionId && State.activeCollectionId !== 1) {
+            DOM.newCollectionSelect.value = State.activeCollectionId;
+        }
     },
 
-    updateAuthUI: (session) => {
-        if (session) {
+    updateAuthUI: (sessionOrUser) => {
+        const user = sessionOrUser?.user || sessionOrUser || null;
+
+        if (DOM.authGate) {
+            clearTimeout(DOM.authGate._hideTimer);
+        }
+
+        if (user) {
             // Logged In: Reveal Sanctuary
             if (DOM.authGate) {
                 DOM.authGate.classList.add('opacity-0', 'pointer-events-none');
-                setTimeout(() => DOM.authGate.classList.add('hidden'), 1000);
+                DOM.authGate._hideTimer = setTimeout(() => DOM.authGate.classList.add('hidden'), 1000);
             }
             
             if (DOM.app) DOM.app.classList.remove('opacity-0', 'hidden');
@@ -78,17 +115,16 @@ export const UI = {
             if (navbar) navbar.classList.remove('opacity-0', 'hidden');
             
             if (DOM.userInfo) DOM.userInfo.classList.remove('hidden');
-            if (DOM.userEmail) DOM.userEmail.textContent = session.user.email;
+            if (DOM.userEmail && user?.email) DOM.userEmail.textContent = user.email;
             if (DOM.authButton) DOM.authButton.innerHTML = `${Icons.logout}<span>Logout</span>`;
             if (DOM.newTextBtn) DOM.newTextBtn.style.display = 'flex';
             if (DOM.textActions) DOM.textActions.classList.remove('hidden');
             if (DOM.addCollectionBtn) DOM.addCollectionBtn.style.display = 'flex';
-            State.user = session.user;
         } else {
             // Logged Out: Show Gate
             if (DOM.authGate) {
                 DOM.authGate.classList.remove('hidden');
-                setTimeout(() => DOM.authGate.classList.remove('opacity-0', 'pointer-events-none'), 10);
+                DOM.authGate._hideTimer = setTimeout(() => DOM.authGate.classList.remove('opacity-0', 'pointer-events-none'), 10);
             }
             
             if (DOM.app) DOM.app.classList.add('opacity-0', 'hidden');
@@ -101,21 +137,43 @@ export const UI = {
             if (DOM.newTextBtn) DOM.newTextBtn.style.display = 'none';
             if (DOM.textActions) DOM.textActions.classList.add('hidden');
             if (DOM.addCollectionBtn) DOM.addCollectionBtn.style.display = 'none';
-            State.user = null;
+        }
+    },
+
+    toggleZenMode: (isZen) => {
+        if (isZen) {
+            DOM.sidebar?.classList.add('lg:hidden');
+            DOM.textListSection?.classList.add('lg:hidden');
+            if (DOM.zenToggleBtn) {
+                DOM.zenToggleBtn.classList.add('bg-primary/20', 'text-primary');
+                DOM.zenToggleBtn.setAttribute('aria-pressed', 'true');
+            }
+        } else {
+            DOM.sidebar?.classList.remove('lg:hidden');
+            DOM.textListSection?.classList.remove('lg:hidden');
+            if (DOM.zenToggleBtn) {
+                DOM.zenToggleBtn.classList.remove('bg-primary/20', 'text-primary');
+                DOM.zenToggleBtn.setAttribute('aria-pressed', 'false');
+            }
         }
     },
 
     toggleModal: (modalElement, show) => {
+        if (!modalElement) return;
+        clearTimeout(modalElement._hideTimer);
         if (show) {
             modalElement.classList.remove('hidden');
             modalElement.classList.add('flex');
-            setTimeout(() => modalElement.classList.remove('opacity-0'), 10);
+            modalElement._hideTimer = setTimeout(() => modalElement.classList.remove('opacity-0'), 10);
         } else {
             modalElement.classList.add('opacity-0');
-            setTimeout(() => {
+            modalElement._hideTimer = setTimeout(() => {
                 modalElement.classList.add('hidden');
                 modalElement.classList.remove('flex');
             }, 500);
+            if (modalElement === DOM.deleteCollectionModal) {
+                State.pendingDeleteCollectionId = null;
+            }
         }
     },
     

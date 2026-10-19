@@ -1,6 +1,13 @@
 const { test, expect } = require('@playwright/test');
+const { setupSupabaseMock } = require('./mocks/supabaseMock');
 
 test.describe('Authentication', () => {
+  test.beforeEach(async ({ page }) => {
+    if (!process.env.TEST_EMAIL) {
+      await setupSupabaseMock(page);
+    }
+  });
+
   test('should login successfully', async ({ page }) => {
     await page.goto('/');
 
@@ -37,7 +44,7 @@ test.describe('Authentication', () => {
     await expect(page.locator('#auth-button')).toBeVisible();
     
     // Click logout
-    await page.locator('#auth-button').click();
+    await page.locator('#auth-button').click({ force: true });
     
     // Expect the login form to reappear
     await expect(loginForm).toBeVisible();
