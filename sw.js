@@ -1,4 +1,4 @@
-const CACHE_NAME = 'scriptorium-v1';
+const CACHE_NAME = 'scriptorium-v5';
 const SUPABASE_CACHE = 'scriptorium-supabase-v1';
 const ASSETS_TO_CACHE = [
   './',
@@ -9,10 +9,25 @@ const ASSETS_TO_CACHE = [
   './src/core/dom.js',
   './src/core/state.js',
   './src/core/controllers.js',
+  './src/core/settings.js',
   './src/api/index.js',
+  './src/api/supabase.js',
   './src/components/index.js',
-  './src/utils/index.js',
-  './src/core/settings.js'
+  './src/components/collection-item.js',
+  './src/components/text-item.js',
+  './src/components/reading-pane.js',
+  './src/components/layout/ContentShell.js',
+  './src/components/layout/LandingPage.js',
+  './src/components/layout/Modals.js',
+  './src/components/layout/Navbar.js',
+  './src/components/layout/Sidebar.js',
+  './src/components/layout/modals/CollectionModal.js',
+  './src/components/layout/modals/DeleteCollectionModal.js',
+  './src/components/layout/modals/DeleteTextModal.js',
+  './src/components/layout/modals/HelpModal.js',
+  './src/components/layout/modals/SettingsModal.js',
+  './src/components/layout/modals/TextModal.js',
+  './src/utils/index.js'
 ];
 
 self.addEventListener('install', (event) => {
@@ -40,15 +55,17 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // 1. Supabase REST API (Network First, fallback to Cache)
+  // 1. Supabase REST API (Network First, fallback to Cache - only caches if response.ok)
   if (url.origin.includes('supabase.co') && url.pathname.startsWith('/rest/v1/') && event.request.method === 'GET') {
     event.respondWith(
       fetch(event.request)
         .then((response) => {
-          const resClone = response.clone();
-          caches.open(SUPABASE_CACHE).then((cache) => {
-            cache.put(event.request, resClone);
-          });
+          if (response.ok) {
+            const resClone = response.clone();
+            caches.open(SUPABASE_CACHE).then((cache) => {
+              cache.put(event.request, resClone);
+            });
+          }
           return response;
         })
         .catch(() => caches.match(event.request))
@@ -62,10 +79,12 @@ self.addEventListener('fetch', (event) => {
       caches.match(event.request).then((cachedResponse) => {
         if (cachedResponse) return cachedResponse;
         return fetch(event.request).then((response) => {
-          const resClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, resClone);
-          });
+          if (response.ok) {
+            const resClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, resClone);
+            });
+          }
           return response;
         });
       })
@@ -73,18 +92,20 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 3. Local App Shell (Stale While Revalidate)
+  // 3. Local App Shell (Network First with Cache fallback for guaranteed freshness)
   if (url.origin === location.origin) {
     event.respondWith(
-      caches.match(event.request).then((cachedResponse) => {
-        const fetchPromise = fetch(event.request).then((networkResponse) => {
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, networkResponse.clone());
-          });
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse.ok) {
+            const resClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, resClone);
+            });
+          }
           return networkResponse;
-        }).catch(() => {});
-        return cachedResponse || fetchPromise;
-      })
+        })
+        .catch(() => caches.match(event.request))
     );
     return;
   }

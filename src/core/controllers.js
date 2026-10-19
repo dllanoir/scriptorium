@@ -77,23 +77,42 @@ export const Controllers = {
      */
     handleLoginSubmit: async (e) => {
         e.preventDefault();
-        const email = e.target.email.value;
-        const password = e.target.password.value;
+        const email = e.target.email?.value || DOM.landingEmail?.value || '';
+        const password = e.target.password?.value || DOM.landingPassword?.value || '';
         
-        const errorDisplay = DOM.landingLoginError || DOM.loginError;
+        const errorDisplay = DOM.landingLoginError;
         if (errorDisplay) errorDisplay.classList.add('hidden');
 
-        const { error } = await Api.login(email, password);
+        const submitBtn = DOM.landingSubmitBtn || e.target.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
 
-        if (error) {
+        try {
+            const { error } = await Api.login(email, password);
+
+            if (error) {
+                if (errorDisplay) {
+                    errorDisplay.textContent = 'Credenciais inválidas ou erro de conexão.';
+                    errorDisplay.classList.remove('hidden');
+                }
+            } else {
+                e.target.reset();
+                Utils.toast('Acesso autorizado.', 'success');
+                // Transition is handled by Api.onAuthStateChange -> UI.updateAuthUI
+            }
+        } catch (err) {
+            console.error("Erro no login:", err);
             if (errorDisplay) {
-                errorDisplay.textContent = 'Credenciais inválidas ou erro de conexão.';
+                errorDisplay.textContent = 'Erro ao processar login.';
                 errorDisplay.classList.remove('hidden');
             }
-        } else {
-            e.target.reset();
-            Utils.toast('Acesso autorizado.', 'success');
-            // Transition is handled by Api.onAuthStateChange -> UI.updateAuthUI
+        } finally {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
         }
     },
 
@@ -108,7 +127,8 @@ export const Controllers = {
         }
 
         const title = e.target['new-title'].value.trim();
-        const collectionId = parseInt(e.target['new-collection'].value, 10);
+        const rawColId = parseInt(e.target['new-collection'].value, 10);
+        const collectionId = Number.isNaN(rawColId) ? (State.collections.find(c => c.id !== 1)?.id || 1) : rawColId;
         const content = e.target['new-content'].value;
         const editId = DOM.editIdInput ? DOM.editIdInput.value : '';
         
@@ -125,9 +145,15 @@ export const Controllers = {
                 await Api.createText({ title, collectionId, content });
                 Utils.toast('Publicado com sucesso!');
             }
+            
+            // Clean draft and hide draft status
+            localStorage.removeItem('scriptorium_draft_text');
+            if (DOM.draftStatus) DOM.draftStatus.classList.add('hidden');
+
             UI.toggleModal(DOM.newTextModal, false);
             e.target.reset();
             if (DOM.charCounter) DOM.charCounter.textContent = '0 / 5000';
+            if (DOM.editorMetrics) DOM.editorMetrics.textContent = '';
             if (DOM.editIdInput) DOM.editIdInput.value = '';
             await Controllers.loadData();
         } catch (err) {
@@ -156,6 +182,11 @@ export const Controllers = {
         DOM.newTextForm['new-content'].value = rawContent;
         
         if (DOM.charCounter) DOM.charCounter.textContent = `${rawContent.length} / 5000`;
+        if (DOM.editorMetrics) {
+            const m = Utils.calculateMetrics(rawContent);
+            DOM.editorMetrics.textContent = m.formatted;
+        }
+        if (DOM.draftStatus) DOM.draftStatus.classList.add('hidden');
         if (DOM.editIdInput) DOM.editIdInput.value = textToEdit.id;
         if (DOM.saveTextLabel) DOM.saveTextLabel.textContent = 'Update Text';
         
@@ -246,6 +277,56 @@ export const Controllers = {
             Utils.toast('Falha ao excluir coleção.', 'error');
             UI.toggleModal(DOM.deleteCollectionModal, false);
         }
+    },
+
+    toggleZenMode: () => {
+        State.isZenMode = !State.isZenMode;
+        Utils.toast(State.isZenMode ? 'Modo Zen ativado.' : 'Modo Zen desativado.', 'info');
+    },
+
+    /**
+     * @param {string} order 
+     */
+    handleSortChange: (order) => {
+        State.sortOrder = order;
+        if (typeof localStorage !== 'undefined') {
+            localStorage.setItem('scriptorium_sort_order', order);
+        }
+    },
+
+    handleCopyText: async () => {
+        if (!State.activeTextId) return;
+        const text = State.texts.find(t => t.id === State.activeTextId);
+        if (!text) return;
+        const rawContent = Array.isArray(text.content) ? text.content.join('\n\n') : (text.content || '');
+        const textToCopy = `${text.title}\n\n${rawContent}`;
+        try {
+            await navigator.clipboard.writeText(textToCopy);
+            Utils.toast('Texto copiado para a área de transferência.', 'success');
+        } catch (err) {
+            console.error('Falha ao copiar:', err);
+            Utils.toast('Falha ao copiar texto.', 'error');
+        }
+    },
+
+    handleExportMarkdown: () => {
+        if (!State.activeTextId) return;
+        const text = State.texts.find(t => t.id === State.activeTextId);
+        if (!text) return;
+        const rawContent = Array.isArray(text.content) ? text.content.join('\n\n') : (text.content || '');
+        const filename = `${(text.title || 'texto').toLowerCase().replace(/[^a-z0-9_\u00C0-\u017F]/gi, '_')}.md`;
+        const content = `# ${text.title}\n\n${rawContent}`;
+        Utils.downloadFile(filename, content, 'text/markdown;charset=utf-8');
+    },
+
+    handleExportTxt: () => {
+        if (!State.activeTextId) return;
+        const text = State.texts.find(t => t.id === State.activeTextId);
+        if (!text) return;
+        const rawContent = Array.isArray(text.content) ? text.content.join('\n\n') : (text.content || '');
+        const filename = `${(text.title || 'texto').toLowerCase().replace(/[^a-z0-9_\u00C0-\u017F]/gi, '_')}.txt`;
+        const content = `${text.title}\n\n${rawContent}`;
+        Utils.downloadFile(filename, content, 'text/plain;charset=utf-8');
     },
 
     /**

@@ -13,8 +13,11 @@ export function Navbar() {
             </div>
             
             <div class="flex items-center space-x-2 md:space-x-4">
-                <button id="show-text-list" class="md:hidden text-stone-300 hover:text-white p-1" title="Ver Textos">
+                <button id="show-text-list" class="lg:hidden text-stone-300 hover:text-white p-1" title="Ver Textos">
                     <span class="material-symbols-outlined">description</span>
+                </button>
+                <button id="zen-mode-toggle" type="button" class="text-stone-300 hover:text-white p-1.5 md:p-2 rounded-xl hover:bg-white/5 transition-all duration-300 active:scale-95 flex items-center justify-center" title="Modo Foco (Alt+Z)">
+                    <span class="material-symbols-outlined text-[18px] md:text-[20px]">self_improvement</span>
                 </button>
                 <button class="bg-white/5 hover:bg-white/10 px-3 md:px-4 py-2 rounded-xl text-stone-200 hover:text-white transition-all duration-300 active:scale-95 font-label text-[10px] md:text-sm uppercase tracking-widest flex items-center space-x-2 border border-white/5 hover:border-white/20 shadow-lg" id="new-text-button" style="display: none;">
                     <span class="material-symbols-outlined text-[16px] md:text-[18px]" data-icon="edit">edit</span>

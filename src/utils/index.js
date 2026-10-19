@@ -10,9 +10,115 @@ export const Utils = {
      */
     sanitize: (html) => {
         return DOMPurify.sanitize(html, {
-            ALLOWED_TAGS: ['p', 'br', 'em', 'strong', 'h1', 'h2', 'h3'],
+            ALLOWED_TAGS: ['p', 'br', 'b', 'i', 'em', 'strong', 'h3', 'blockquote', 'ul', 'li', 'code', 'hr'],
             ALLOWED_ATTR: []
         });
+    },
+
+    /**
+     * Calculates text statistics and metrics.
+     * @param {string} text 
+     * @returns {{ chars: number, words: number, readingTimeMin: number, formatted: string }}
+     */
+    calculateMetrics: (text = '') => {
+        const str = typeof text === 'string' ? text : '';
+        const chars = str.length;
+        const words = str.trim() ? str.trim().split(/\s+/).filter(Boolean).length : 0;
+        const readingTimeMin = Math.max(1, Math.ceil(words / 200));
+        return {
+            chars,
+            words,
+            readingTimeMin,
+            formatted: `${words} ${words === 1 ? 'palavra' : 'palavras'} • ~${readingTimeMin} min de leitura`
+        };
+    },
+
+    /**
+     * Triggers file download in the browser.
+     * @param {string} filename 
+     * @param {string} content 
+     * @param {string} [mimeType='text/plain;charset=utf-8'] 
+     */
+    downloadFile: (filename, content, mimeType = 'text/plain;charset=utf-8') => {
+        const blob = new Blob([content], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    },
+
+    /**
+     * Applies markdown formatting to the current selection in a textarea.
+     * @param {HTMLTextAreaElement} textarea 
+     * @param {'bold'|'italic'|'h3'|'quote'|'list'|'code'|'hr'} type 
+     */
+    applyMarkdownFormat: (textarea, type) => {
+        if (!textarea) return;
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const value = textarea.value;
+        const selected = value.substring(start, end);
+
+        let replacement = '';
+        let prefixLen = 0;
+        let suffixLen = 0;
+
+        switch (type) {
+            case 'bold':
+                replacement = selected ? `**${selected}**` : '**texto**';
+                prefixLen = 2;
+                suffixLen = 2;
+                break;
+            case 'italic':
+                replacement = selected ? `*${selected}*` : '*texto*';
+                prefixLen = 1;
+                suffixLen = 1;
+                break;
+            case 'h3':
+                replacement = selected ? `### ${selected}` : '### Título';
+                prefixLen = 4;
+                suffixLen = 0;
+                break;
+            case 'quote':
+                replacement = selected ? `> ${selected}` : '> Citação';
+                prefixLen = 2;
+                suffixLen = 0;
+                break;
+            case 'list':
+                replacement = selected ? `- ${selected}` : '- Item';
+                prefixLen = 2;
+                suffixLen = 0;
+                break;
+            case 'code':
+                replacement = selected ? `\`${selected}\`` : '`código`';
+                prefixLen = 1;
+                suffixLen = 1;
+                break;
+            case 'hr':
+                replacement = '\n---\n';
+                prefixLen = replacement.length;
+                suffixLen = 0;
+                break;
+            default:
+                return;
+        }
+
+        textarea.focus();
+        textarea.setRangeText(replacement, start, end, 'end');
+        if (!selected) {
+            if (type === 'hr') {
+                textarea.setSelectionRange(start + replacement.length, start + replacement.length);
+            } else {
+                textarea.setSelectionRange(start + prefixLen, start + replacement.length - suffixLen);
+            }
+        } else {
+            textarea.setSelectionRange(start + replacement.length, start + replacement.length);
+        }
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
     },
 
     /**
@@ -21,18 +127,22 @@ export const Utils = {
      * @param {'success'|'error'|'info'} [type='success'] - Type of toast.
      */
     toast: (message, type = 'success') => {
-        Toastify({
-            text: message,
-            duration: 3000,
-            close: true,
-            gravity: "top",
-            position: "right",
-            style: {
-                background: type === 'success' ? '#6366f1' : type === 'error' ? '#ef4444' : '#3b82f6'
-            },
-            stopOnFocus: true,
-            className: "custom-toast"
-        }).showToast();
+        if (typeof Toastify === 'function') {
+            Toastify({
+                text: message,
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                style: {
+                    background: type === 'success' ? '#6366f1' : type === 'error' ? '#ef4444' : '#3b82f6'
+                },
+                stopOnFocus: true,
+                className: "custom-toast"
+            }).showToast();
+        } else {
+            console.log(`[Toast ${type}]: ${message}`);
+        }
     },
 
     /**
